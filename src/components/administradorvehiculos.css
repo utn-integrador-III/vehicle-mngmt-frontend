@@ -1,0 +1,57 @@
+.vehiculos-container {
+  padding: 20px;
+  background-color: #ffffff;
+  width: 100%;
+  flex: 1;
+}
+
+/* Área superior con el botón */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.titulo-seccion {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1f2e56;
+  margin: 20px 30px 10px;
+  border: none;
+  outline: none;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.add-button {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #0055aa;
+}
+
+.search-input {
+  margin-left: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  background-color: #003366;
+  color: white;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #e6e6e6;
+}
