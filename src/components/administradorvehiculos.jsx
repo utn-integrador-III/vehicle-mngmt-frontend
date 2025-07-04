@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import "./administradorvehiculos.css";
 
 function AdministradorVehiculos() {
@@ -102,7 +102,7 @@ function AdministradorVehiculos() {
   };
 
   const vehiculosFiltrados = vehiculos.filter((vehiculo) =>
-  `${vehiculos.marca} ${vehiculos.modelo} ${vehiculos.placa}`
+  `${vehiculo.marca} ${vehiculo.modelo} ${vehiculo.placa}`
     .toLowerCase()
     .includes(busqueda.toLowerCase())
 );
