@@ -7,6 +7,8 @@ import AdministradorReservaciones from "./components/administradorreservaciones"
 
 import logoUTN   from "./images/logoutn.png";
 import perfilImg from "./images/logoperfil.png";
+import ListadoVehiculos from "./components/listaVehiculos";
+
 
 function App() {
   // By default we start in 'vehicles'
@@ -20,6 +22,9 @@ function App() {
       break;
     case "usuarios":
       Content = <AdministradorUsuarios />;
+      break;
+    case "listado":
+      Content = <ListadoVehiculos/>;
       break;
     default:
       Content = <AdministradorVehiculos />;
@@ -43,6 +48,12 @@ function App() {
             onClick={() => setActiveTab("reservaciones")}
           >
             Reservación Vehículo
+          </button>
+           <button
+            className={`menu-button ${activeTab === "listado" ? "active" : ""}`}
+            onClick={() => setActiveTab("listado")}
+          >
+            Listado Vehiculos
           </button>
           <button
             className={`menu-button ${activeTab === "usuarios" ? "active" : ""}`}

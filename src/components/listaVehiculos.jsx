@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Button, Form, InputGroup } from "react-bootstrap";
 import logo from "../images/logo-utn.png";
+import "./ListadoVehiculos.css";
 
 const initialVehicles = [
   {
@@ -8,21 +8,24 @@ const initialVehicles = [
     model: "Nissan Frontier",
     plate: "ACT-478",
     mode: "Automatic",
-    photo: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+    photo:
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 2,
     model: "Toyota Rush",
     plate: "BAT-123",
     mode: "Automatic",
-    photo: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+    photo:
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 3,
     model: "Toyota Hiace",
     plate: "HYA-947",
     mode: "Manual",
-    photo: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+    photo:
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
@@ -44,82 +47,45 @@ const ListadoVehiculos = () => {
   });
 
   return (
-    <Container>
-      <InputGroup className="mb-4 mt-4">
-        <Form.Control
+    <div className="container">
+      <div className="input-group mb-4 mt-4 search-input-group">
+        <input
+          type="text"
+          className="form-control search-input"
           placeholder="Search by model, plate or transmission"
           value={searchTerm}
           onChange={handleSearchChange}
-          style={{
-            borderRadius: "50px",
-            padding: "12px 24px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-          }}
         />
-      </InputGroup>
-      <Row>
+      </div>
+      <div className="row">
         {filteredVehicles.map((vehicle) => (
-          <Col key={vehicle.id} sm={12} md={4} lg={3} className="mb-4">
-            <Card style={{ border: "none", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
-              <div style={{ position: "relative", textAlign: "center" }}>
+          <div key={vehicle.id} className="col-sm-12 col-md-4 col-lg-3 mb-4">
+            <div className="card vehicle-card">
+              <div className="image-container">
                 <img
                   src={vehicle.photo}
                   alt={vehicle.model}
-                  style={{
-                    width: "100%",
-                    height: "150px",
-                    objectFit: "cover",
-                    borderTopLeftRadius: "10px",
-                    borderTopRightRadius: "10px",
-                  }}
+                  className="vehicle-photo card-img-top"
                 />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    backgroundColor: "rgba(255,255,255,0.8)",
-                    borderRadius: "8px",
-                    padding: "4px",
-                  }}
-                >
-                  <img src={logo} alt="Logo UTN" style={{ width: "30px" }} />
+                <div className="logo-overlay">
+                  <img src={logo} alt="Logo UTN" className="logo-utn" />
                 </div>
               </div>
-              <Card.Body className="text-center" style={{ paddingTop: "0" }}>
-                <Card.Title style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "12px" }}>
-                  {vehicle.model}
-                </Card.Title>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    backgroundColor: "#f0f0f0",
-                    padding: "6px 12px",
-                    borderRadius: "5px",
-                    marginBottom: "12px",
-                  }}
-                >
+              <div className="card-body text-center">
+                <h5 className="card-title vehicle-title">{vehicle.model}</h5>
+                <div className="vehicle-info">
                   <span>{vehicle.plate}</span>
                   <span>{vehicle.mode}</span>
                 </div>
-                <Button
-                  variant="primary"
-                  style={{
-                    backgroundColor: "#003366",
-                    border: "none",
-                    width: "100%",
-                    borderRadius: "20px",
-                  }}
-                >
+                <button className="btn btn-primary reservation-button">
                   Reservation
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
+                </button>
+              </div>
+            </div>
+          </div>
         ))}
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 };
 
