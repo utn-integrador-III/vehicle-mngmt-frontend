@@ -1,42 +1,73 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import "./App.css";
-import AdministradorVehiculos from "./components/administradorvehiculos";
-import ListadoVehiculos from "./components/listaVehiculos";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from "react";
+import "./App.css";                                   
 
+import AdministradorVehiculos from "./components/administradorvehiculos";
+import AdministradorUsuarios   from "./components/administradorusuarios";
+import AdministradorReservaciones from "./components/administradorreservaciones";
+
+import logoUTN   from "./images/logoutn.png";
+import perfilImg from "./images/logoperfil.png";
 
 function App() {
+  // By default we start in 'vehicles'
+  const [activeTab, setActiveTab] = useState("vehiculos");
+
+  // We choose which component to render
+  let Content;
+  switch (activeTab) {
+    case "reservaciones":
+      Content = <AdministradorReservaciones />;
+      break;
+    case "usuarios":
+      Content = <AdministradorUsuarios />;
+      break;
+    default:
+      Content = <AdministradorVehiculos />;
+  }
+
   return (
-    <Router>
-      <div className="app-container">
-        {/* Barra azul */}
-        <header className="navbar">
-          <img
-            src="src/images/logoutn.png"
-            alt="Logo UTN"
-            className="logo"
-          />
-          {/* Botones de navegación */}
-          <nav className="nav-links">
-            <Link to="/">Administrar Vehículos</Link>
-            <Link to="/listado">Listado Vehículos</Link>
-          </nav>
-        </header>
+    <div className="app-container">
+      {/* Blue bar with menu */}
+      <header className="navbar">
+        <img src={logoUTN} alt="Logo UTN" className="navbar-logo" />
 
-        {/* Borde gris */}
-        <div className="borde-gris"></div>
+        <div className="navbar-menu">
+          <button
+            className={`menu-button ${activeTab === "vehiculos" ? "active" : ""}`}
+            onClick={() => setActiveTab("vehiculos")}
+          >
+            Inicio
+          </button>
+          <button
+            className={`menu-button ${activeTab === "reservaciones" ? "active" : ""}`}
+            onClick={() => setActiveTab("reservaciones")}
+          >
+            Reservación Vehículo
+          </button>
+          <button
+            className={`menu-button ${activeTab === "usuarios" ? "active" : ""}`}
+            onClick={() => setActiveTab("usuarios")}
+          >
+            Gestión Usuarios
+          </button>
+        </div>
 
-        {/* Contenido principal */}
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<AdministradorVehiculos />} />
-            <Route path="/listado" element={<ListadoVehiculos />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+        <div className="navbar-profile">
+          <img src={perfilImg} alt="Perfil" className="profile-pic" />
+          <span className="profile-name">Yonan Arguedas Calvo</span>
+        </div>
+      </header>
+
+      {/* Gray border */}
+      <div className="borde-gris" />
+
+      {/* Main content */}
+      <main className="main-content">
+        {Content}
+      </main>
+    </div>
   );
 }
 
 export default App;
+
