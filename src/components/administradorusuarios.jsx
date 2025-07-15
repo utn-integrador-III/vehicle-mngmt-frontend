@@ -27,7 +27,7 @@ export default function AdministradorUsuarios() {
 
   return (
     <div className="module-container">
-      <h2>Bienvenido al módulo de Mantenimiento Usuarios</h2>
+    
       <h3 className="usu-section-title">Listado de Usuarios</h3>
 
       {/* Interfaz superior */}
