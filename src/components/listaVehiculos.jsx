@@ -9,7 +9,7 @@ const initialVehicles = [
     plate: "ACT-478",
     mode: "Automatic",
     photo:
-      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+      "https://www.nissanautoferro.com/wp-content/uploads/2022/05/nueva-frontier-s-4x2-mt-1.png",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ const initialVehicles = [
     plate: "BAT-123",
     mode: "Automatic",
     photo:
-      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+      "https://www.toyotacr.com/uploads/family/7174cd099fd106eb448a2256c99809509d96903d.png",
   },
   {
     id: 3,
@@ -25,7 +25,7 @@ const initialVehicles = [
     plate: "HYA-947",
     mode: "Manual",
     photo:
-      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+      "https://cdn-api.toyotacr.com/toyotacr_website/media/cache/hero_bg_small/uploads/model/8b85d9a3743860e529c0fd0c3adc1b965e4f4938.png",
   },
 ];
 
