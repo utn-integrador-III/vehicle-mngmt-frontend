@@ -179,3 +179,114 @@
 .usu-cancel-btn:hover {
   background-color: #aaa;
 }
+
+.usu-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.usu-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.usu-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+
+.usu-card h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.usu-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+  text-align: left;
+}
+
+.usu-card ul li {
+  margin: 5px 0;
+}
+
+.usu-card-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.usu-edit-btn, .usu-delete-btn {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.usu-delete-btn {
+  background-color: #2f66b5;
+}
+
+.usu-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.usu-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Confirmación de eliminación */
+.usu-confirm-modal {
+  background-color: white;
+  padding: 25px 30px;
+  border-radius: 10px;
+  width: 500px; /* Aumentado de 400px a 500px */
+  text-align: left; /* Importante para alinear todo a la izquierda */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.usu-confirm-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+
+.usu-delete-confirm-btn {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 8px 22px;
+  border-radius: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.usu-delete-confirm-btn:hover {
+  background-color: #c62828;
+}
+
