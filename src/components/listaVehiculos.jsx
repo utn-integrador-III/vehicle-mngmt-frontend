@@ -29,7 +29,7 @@ const initialVehicles = [
   },
 ];
 
-const ListadoVehiculos = () => {
+const ListadoVehiculos = ({ onReservarClick }) => {
   const [vehicles] = useState(initialVehicles);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -77,8 +77,11 @@ const ListadoVehiculos = () => {
                   <span>{vehicle.plate}</span>
                   <span>{vehicle.mode}</span>
                 </div>
-                <button className="btn btn-primary reservation-button">
-                  Reservation
+                <button
+                  className="btn btn-primary reservation-button"
+                  onClick={onReservarClick}
+                >
+                  Reservación
                 </button>
               </div>
             </div>
