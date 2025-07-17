@@ -1,38 +1,45 @@
 import React, { useState } from "react";
-import "./App.css";                                   
+import "./App.css";
 
 import AdministradorVehiculos from "./components/administradorvehiculos";
-import AdministradorUsuarios   from "./components/administradorusuarios";
+import AdministradorUsuarios from "./components/administradorusuarios";
 import AdministradorReservaciones from "./components/administradorreservaciones";
-
-import logoUTN   from "./images/logoutn.png";
-import perfilImg from "./images/logoperfil.png";
 import ListadoVehiculos from "./components/listaVehiculos";
+import Calendario from "./components/calendario";
+import Horario from "./components/horario"; 
 
+import logoUTN from "./images/logoutn.png";
+import perfilImg from "./images/logoperfil.png";
 
 function App() {
-  // By default we start in 'vehicles'
   const [activeTab, setActiveTab] = useState("vehiculos");
 
-  // We choose which component to render
   let Content;
-  switch (activeTab) {
-    case "reservaciones":
-      Content = <AdministradorReservaciones />;
-      break;
-    case "usuarios":
-      Content = <AdministradorUsuarios />;
-      break;
-    case "listado":
-      Content = <ListadoVehiculos/>;
-      break;
-    default:
-      Content = <AdministradorVehiculos />;
-  }
+ switch (activeTab) {
+  case "reservaciones":
+    Content = <AdministradorReservaciones />;
+    break;
+  case "usuarios":
+    Content = <AdministradorUsuarios />;
+    break;
+  case "listado":
+    Content = (
+      <ListadoVehiculos onReservarClick={() => setActiveTab("calendario")} />
+    );
+    break;
+  case "calendario":
+    Content = <Calendario setActiveTab={setActiveTab} />;
+    break;
+  case "horario":
+    Content = <Horario />;
+    break;
+  default:
+    Content = <AdministradorVehiculos />;
+}
+
 
   return (
     <div className="app-container">
-      {/* Blue bar with menu */}
       <header className="navbar">
         <img src={logoUTN} alt="Logo UTN" className="navbar-logo" />
 
@@ -49,7 +56,7 @@ function App() {
           >
             Reservación Vehículo
           </button>
-           <button
+          <button
             className={`menu-button ${activeTab === "listado" ? "active" : ""}`}
             onClick={() => setActiveTab("listado")}
           >
@@ -69,16 +76,11 @@ function App() {
         </div>
       </header>
 
-      {/* Gray border */}
       <div className="borde-gris" />
 
-      {/* Main content */}
-      <main className="main-content">
-        {Content}
-      </main>
+      <main className="main-content">{Content}</main>
     </div>
   );
 }
 
 export default App;
-
