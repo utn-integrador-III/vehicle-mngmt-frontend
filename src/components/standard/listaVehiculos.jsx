@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../images/logo-utn.png";
+import logo from "../../images/logo-utn.png";
 import "./ListadoVehiculos.css";
 
 const initialVehicles = [

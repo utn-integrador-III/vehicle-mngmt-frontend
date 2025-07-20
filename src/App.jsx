@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import AdministradorVehiculos from "./components/administradorvehiculos";
-import AdministradorUsuarios from "./components/administradorusuarios";
-import AdministradorReservaciones from "./components/administradorreservaciones";
-import ListadoVehiculos from "./components/listaVehiculos";
-import Calendario from "./components/calendario";
-import Horario from "./components/horario"; 
+import AdministradorVehiculos from "./components/administrator/administradorvehiculos";
+import AdministradorUsuarios from "./components/administrator/administradorusuarios";
+import AdministradorReservaciones from "./components/administrator/administradorreservaciones";
+import ListadoVehiculos from "./components/standard/listaVehiculos";
+import Calendario from "./components/standard/calendario";
+import Horario from "./components/standard/horario"; 
 
 import logoUTN from "./images/logoutn.png";
 import perfilImg from "./images/logoperfil.png";
