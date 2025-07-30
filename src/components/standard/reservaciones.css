@@ -1,0 +1,103 @@
+.res-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.res-title {
+  text-align: center;
+  color: #002c63;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.res-date {
+  text-align: center;
+  color: #444;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.res-card {
+  display: flex;
+  gap: 50px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 50px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.res-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.res-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.res-group label {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.res-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #e5e5e5;
+
+  /* Color de texto más oscuro */
+  color: #333333;
+}
+
+/* Si además quieres un placeholder más sutil, añade: */
+.res-group input::placeholder {
+  color: #777777;
+}
+
+.file-btn {
+  background: #002c63;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.companions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+}
+
+.res-footer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.send-btn {
+  background: #002c63;
+  color: #fff;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.exit-btn {
+  background: transparent;
+  color: #002c63;
+  border: 1px solid #ccc;
+  padding: 10px 30px;
+  border-radius: 20px;
+  cursor: pointer;
+}
