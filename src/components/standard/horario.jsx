@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./horario.css";
+import Reservaciones from "./reservaciones";
 
 const Horario = () => {
   const [departureHour, setDepartureHour] = useState(16);
@@ -7,6 +8,8 @@ const Horario = () => {
   const [arrivalHour, setArrivalHour] = useState(18);
   const [arrivalMinute, setArrivalMinute] = useState(30);
 
+  const [showReservaciones, setShowReservaciones] = useState(false); 
+  
   const formatTwoDigits = (num) => String(num).padStart(2, "0");
 
   const calculateTop = (hour, minute) => {
@@ -15,6 +18,10 @@ const Horario = () => {
 
   const blockTop = calculateTop(departureHour, departureMinute);
   const blockHeight = calculateTop(arrivalHour, arrivalMinute) - blockTop;
+
+  if (showReservaciones) {
+    return <Reservaciones />;
+  }
 
   return (
     <div className="horario-container">
@@ -113,6 +120,15 @@ const Horario = () => {
             />
           </div>
         </div>
+      </div>
+
+      <div className="horario-footer">
+        <button
+          className="next-btn"
+          onClick={() => setShowReservaciones(true)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

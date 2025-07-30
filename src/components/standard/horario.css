@@ -171,3 +171,22 @@
   pointer-events: none;
   z-index: 0;
 }
+
+.horario-footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.next-btn {
+  background-color: #002c63;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.next-btn:hover {
+  background-color: #004080;
+}
