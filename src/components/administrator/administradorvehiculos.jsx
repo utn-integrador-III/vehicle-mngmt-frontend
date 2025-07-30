@@ -118,7 +118,7 @@ function AdministradorVehiculos() {
         </button>
         <input
   type="text"
-  className="search-input"
+  className="search-input-list"
   placeholder="Buscar vehículo..."
   value={busqueda}
   onChange={(e) => setBusqueda(e.target.value)}
