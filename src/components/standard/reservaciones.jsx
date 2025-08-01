@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReservationTicket from "./muestrareservaciones";
 import "./reservaciones.css";
 
 export default function Reservaciones() {
@@ -12,14 +13,19 @@ export default function Reservaciones() {
   const [comp3, setComp3] = useState("");
   const [comp4, setComp4] = useState("");
   const [file, setFile] = useState(null);
+  const [showTicket, setShowTicket] = useState(false);
 
   const handleFile = (e) => setFile(e.target.files[0]);
   const handleSend = () => {
-    // lógica de envío...
+    setShowTicket(true);
   };
   const handleExit = () => {
-    // podrías hacer history.back() o avisar al padre
+  
   };
+
+  if (showTicket) {
+    return <ReservationTicket />;
+  }
 
   return (
     <div className="res-container">
