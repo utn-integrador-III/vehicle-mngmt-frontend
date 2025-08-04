@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import logo from "../../images/logo-utn.png";
 import "./ListadoVehiculos.css";
 
@@ -57,7 +57,7 @@ const initialVehicles = [
     plate: "TUC-555",
     mode: "Automatic",
     photo:
-      "https://www.hyundaicr.com/images/modelos/nuevotucson/360/Teal/Teal_6.webp",
+      "https://images.dealer.com/ddc/vehicles/2019/Hyundai/Tucson/SUV/perspective/front-left/2019_24.png",
   },
 ];
 
@@ -65,6 +65,27 @@ const ListadoVehiculos = ({ onReservarClick }) => {
   const [vehicles] = useState(initialVehicles);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const touchStartXRef = useRef(0);
+  const touchEndXRef = useRef(0);
+
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartXRef.current - touchEndXRef.current;
+
+    if (diff > 50 && currentIndex < filteredVehicles.length - 3) {
+      setCurrentIndex((prev) => Math.min(prev + 1, filteredVehicles.length - 3));
+    } else if (diff < -50 && currentIndex > 0) {
+      setCurrentIndex((prev) => Math.max(prev - 1, 0));
+    }
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -113,7 +134,12 @@ const ListadoVehiculos = ({ onReservarClick }) => {
           &lt;
         </button>
 
-        <div className="carousel">
+        <div
+          className="carousel"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {visibleVehicles.map((vehicle, idx) => {
             const isCenter = idx === 1;
             return (

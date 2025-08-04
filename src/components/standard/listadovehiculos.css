@@ -23,8 +23,8 @@
   max-width: 600px;
   padding: 16px 24px;
   border-radius: 30px;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: #003366;
+  color: #ffffff;
   border: 2px solid #ccc;
   font-size: 1.1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -41,7 +41,7 @@
 
 .carousel {
   display: flex;
-  gap: 5px; /* Separación entre cards */
+  gap: 15px; /* Separación entre cards */
   overflow: hidden;
   width: 100%;
   max-width: 900px;

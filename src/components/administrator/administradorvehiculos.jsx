@@ -189,7 +189,10 @@ function AdministradorVehiculos() {
               <div className="form-row">
                 <div className="form-group">
                   <label>Modelo</label>
-                  <input type="text" value={modelo} onChange={(e) => setModelo(e.target.value)} />
+                  <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                    <option value="Automático">Automático</option>
+                    <option value="Manual">Manual</option>
+                  </select>
                 </div>
                 <div className="form-group">
                   <label>Año</label>
