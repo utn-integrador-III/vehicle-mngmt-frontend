@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './muestrareservaciones.css';
+import Vehicle from './listaVehiculos';
+
+
 
 const ReservationTicket = () => {
+
+  const [showlistado, setShowlistado] = useState(false); 
+
+    if (showlistado) {
+      return <Vehicle />;
+    }
   return (
     <div className="ticket-container">
-
       <main className="ticket-content">
         <h2>Reservation ticket information</h2>
-        <p className="date">Reservation date: 2025-08-17</p>
-
+        <p className="date">Reservation
+           date: 2025-08-17</p>
         <div className="ticket-card">
           <div className="ticket-row">
             <div className="ticket-field">
@@ -24,7 +32,6 @@ const ReservationTicket = () => {
               <div className="value">Toyota</div>
             </div>
           </div>
-
           <div className="ticket-row">
             <div className="ticket-field">
               <label>Vehicle address</label>
@@ -39,7 +46,6 @@ const ReservationTicket = () => {
               <div className="value">Transfer to meeting</div>
             </div>
           </div>
-
           <div className="ticket-row">
             <div className="ticket-field">
               <label>Date of service</label>
@@ -58,7 +64,6 @@ const ReservationTicket = () => {
               <div className="status accepted">Accepted</div>
             </div>
           </div>
-
           <div className="ticket-row companions">
             <div className="ticket-field">
               <label>Companions</label>
@@ -68,10 +73,11 @@ const ReservationTicket = () => {
               </ul>
             </div>
           </div>
-
           <div className="ticket-buttons">
             <button className="btn-view">View pdf</button>
-            <button className="btn-exit">Exit</button>
+            <button className="btn-exit"
+            onClick={() => setShowlistado(true)}
+            >Exit</button>
           </div>
         </div>
       </main>
