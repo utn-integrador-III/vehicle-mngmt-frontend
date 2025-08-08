@@ -1,0 +1,61 @@
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* por encima del ticket */
+}
+
+.confirm-modal {
+  position: relative;
+  width: 520px;
+  max-width: 90vw;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  padding: 28px 28px 32px;
+  text-align: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.confirm-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: #333;
+}
+
+.confirm-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2e56;
+  margin: 8px 0 14px;
+}
+
+.confirm-check {
+  margin: 0 auto 14px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #22c55e; /* verde */
+  color: #fff;
+  font-weight: 800;
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-text {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.5;
+  margin: 0;
+}
