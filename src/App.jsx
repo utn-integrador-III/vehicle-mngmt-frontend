@@ -3,7 +3,8 @@ import "./App.css";
 
 import AdministradorVehiculos from "./components/administrator/administradorvehiculos";
 import AdministradorUsuarios from "./components/administrator/administradorusuarios";
-import AdministradorReservaciones from "./components/administrator/administradorreservaciones";
+import AdministradorReservaciones from "./components/administrator/administradorreservaciones";  // Este sigue igual
+import AdministradorBoletas from "./components/administrator/administradorboletas";  // Nueva importación
 import ListadoVehiculos from "./components/standard/listaVehiculos";
 import Calendario from "./components/standard/calendario";
 import Horario from "./components/standard/horario"; 
@@ -14,28 +15,30 @@ function App() {
   const [activeTab, setActiveTab] = useState("vehiculos");
 
   let Content;
- switch (activeTab) {
-  case "reservaciones":
-    Content = <AdministradorReservaciones />;
-    break;
-  case "usuarios":
-    Content = <AdministradorUsuarios />;
-    break;
-  case "listado":
-    Content = (
-      <ListadoVehiculos onReservarClick={() => setActiveTab("calendario")} />
-    );
-    break;
-  case "calendario":
-    Content = <Calendario setActiveTab={setActiveTab} />;
-    break;
-  case "horario":
-    Content = <Horario />;
-    break;
-  default:
-    Content = <AdministradorVehiculos />;
-}
-
+  switch (activeTab) {
+    case "reservaciones":
+      Content = <AdministradorReservaciones />;  // Sigue mostrando reservaciones aquí
+      break;
+    case "usuarios":
+      Content = <AdministradorUsuarios />;
+      break;
+    case "listado":
+      Content = (
+        <ListadoVehiculos onReservarClick={() => setActiveTab("calendario")} />
+      );
+      break;
+    case "calendario":
+      Content = <Calendario setActiveTab={setActiveTab} />;
+      break;
+    case "horario":
+      Content = <Horario />;
+      break;
+    case "boletas":      // Nueva pestaña para boletas
+      Content = <AdministradorBoletas />;
+      break;
+    default:
+      Content = <AdministradorVehiculos />;
+  }
 
   return (
     <div className="app-container">
@@ -66,6 +69,12 @@ function App() {
             onClick={() => setActiveTab("usuarios")}
           >
             Gestión Usuarios
+          </button>
+          <button
+            className={`menu-button ${activeTab === "boletas" ? "active" : ""}`}
+            onClick={() => setActiveTab("boletas")}
+          >
+            Boletas
           </button>
         </div>
 
