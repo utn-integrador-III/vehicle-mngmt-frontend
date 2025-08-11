@@ -1,0 +1,146 @@
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
+  border-radius: 20px;
+  box-shadow: none;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+.tab-btn {
+  padding: 10px 50px;
+  border: none;
+  background: #D9D9D9;
+  font-size: 14px;
+  color: #133E87;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.tab-btn.active {
+  background: #133E87;
+  color: white;
+  font-size: 16px;
+  transform: scale(1.2);
+}
+.tab-btn:not(:last-child) { border-right: none; }
+.tab-btn, .tab-btn:focus { outline: none; }
+
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #D9D9D9;
+  border-radius: 10px;
+  padding: 10px 10px;
+  width: 280px;
+}
+.search-icon { width: 20px; height: 20px; margin-right: 8px; }
+.search-container input {
+  border: none;
+  color: #000000;
+  background: transparent;
+  outline: none;
+  flex: 1;
+}
+.calendar-icon { width: 30px; height: 35px; cursor: pointer; }
+
+.boletas-list {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 15px;
+}
+
+.boleta-card {
+  display: flex;
+  background: white;
+  width: 500px;             
+  border-radius: 10px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+.boleta-color { background: #143d85; width: 50px; }
+.boleta-info { flex: 1; padding: 10px; color: black; }
+
+.boleta-actions {
+  display: flex;
+  flex-direction: column;   
+  justify-content: center;
+  align-items: flex-end;    
+  gap: 6px;
+  padding: 10px;
+  color: #000000;
+}
+
+.btn-primary {
+  background: #143d85;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 15px;
+  outline: none;
+}
+.btn-secondary {
+  background: #dcdcdc;
+  color: #002B6E;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 15px;
+  outline: none;
+}
+.btn-primary:focus, .btn-secondary:focus { outline: none; }
+
+.date-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #D9D9D9;
+  border-radius: 10px;
+  padding: 8px 10px;
+  height: 40px;
+}
+.date-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #000;
+  font-family: inherit;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  border: 2px solid transparent;
+}
+.status-badge.accepted {
+  color: #1d6f3a;
+  background: #eaf8ef;
+  border-color: #9ad4ae;
+}
+.status-badge.rejected {
+  color: #8b1e1e;
+  background: #fdecec;
+  border-color: #f3a9a9;
+}
+
+.status-text {
+  font-weight: 700;
+  color: #000;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}

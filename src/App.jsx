@@ -3,7 +3,7 @@ import "./App.css";
 
 import AdministradorVehiculos from "./components/administrator/administradorvehiculos";
 import AdministradorUsuarios from "./components/administrator/administradorusuarios";
-import AdministradorReservaciones from "./components/administrator/administradorreservaciones";  // Este sigue igual
+import AdministradorReservaciones from "./components/standard/administradorreservaciones";  // Este sigue igual
 import AdministradorBoletas from "./components/administrator/administradorboletas";  // Nueva importación
 import ListadoVehiculos from "./components/standard/listaVehiculos";
 import Calendario from "./components/standard/calendario";
