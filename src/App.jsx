@@ -85,8 +85,8 @@ function App() {
                 Inicio
               </button>
               <button
-                className={`menu-button ${activeTab === "reservaciones" ? "active" : ""}`}
-                onClick={() => setActiveTab("reservaciones")}
+                className={`menu-button ${activeTab === "boletas" ? "active" : ""}`}
+                onClick={() => setActiveTab("boletas")}
               >
                 Reservación Vehículo
               </button>
@@ -99,12 +99,20 @@ function App() {
             </>
           )}
           {userType === "usuario" && (
+            <>
             <button
               className={`menu-button ${activeTab === "listado" ? "active" : ""}`}
               onClick={() => setActiveTab("listado")}
             >
               Listado Vehiculos
             </button>
+            <button
+                className={`menu-button ${activeTab === "reservaciones" ? "active" : ""}`}
+                onClick={() => setActiveTab("reservaciones")}
+              >
+                Reservación Vehículo
+              </button>
+              </>
           )}
         </div>
 
