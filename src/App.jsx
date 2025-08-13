@@ -7,7 +7,6 @@ import AdministradorReservaciones from "./components/standard/administradorreser
 import AdministradorBoletas from "./components/administrator/administradorboletas";  // Nueva importación
 import ListadoVehiculos from "./components/standard/listaVehiculos";
 import Calendario from "./components/standard/calendario";
-import Horario from "./components/standard/horario"; 
 import Login from "./components/login";
 import logoUTN from "./images/logoutn.png";
 import perfilImg from "./images/logoperfil.png";
