@@ -20,7 +20,7 @@ function App() {
   let Content;
   switch (activeTab) {
     case "reservaciones":
-      Content = <AdministradorReservaciones />;
+      Content = <AdministradorReservaciones onExit={() => setActiveTab("listado")} />;
       break;
     case "usuarios":
       Content = <AdministradorUsuarios />;
