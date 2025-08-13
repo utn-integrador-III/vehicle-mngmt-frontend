@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import ReservationTicket from "./muestrareservaciones";
 import "./reservaciones.css";
-import Vehicle from "./listaVehiculos";
 
-export default function Reservaciones() {
+export default function Reservaciones({ onExit }) {
   const [direccion, setDireccion] = useState("");
   const [necesidad, setNecesidad] = useState("");
   const [departureTime] = useState("16:00");
@@ -15,19 +14,20 @@ export default function Reservaciones() {
   const [comp4, setComp4] = useState("");
   const [file, setFile] = useState(null);
   const [showTicket, setShowTicket] = useState(false);
-    const [showlistado, setShowlistado] = useState(false); 
-
-    if (showlistado) {
-      return <Vehicle />;
-    }
 
   const handleFile = (e) => setFile(e.target.files[0]);
   const handleSend = () => {
     setShowTicket(true);
   };
 
+  const handleExit = () => {
+    if (onExit) {
+      onExit();
+    }
+  };
+
   if (showTicket) {
-    return <ReservationTicket />;
+    return <ReservationTicket onExit={onExit} />;
   }
 
   return (
@@ -129,7 +129,7 @@ export default function Reservaciones() {
         <button className="send-btn" onClick={handleSend}>
           Send
         </button>
-        <button className="exit-btn" onClick={() => setShowlistado(true)}>
+        <button className="exit-btn" onClick={handleExit}>
           Exit
         </button>
       </div>

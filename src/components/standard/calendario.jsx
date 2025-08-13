@@ -73,7 +73,7 @@ const HorarioPopup = ({ visible, onClose, onHoraSeleccionada }) => {
   );
 };
 
-const Calendario = () => {
+const Calendario = ({ setActiveTab }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -135,7 +135,7 @@ const Calendario = () => {
   }
 
   if (showReservacion) {
-    return <Reservaciones />;
+    return <Reservaciones onExit={() => setActiveTab("listado")} />;
   }
 
   return (

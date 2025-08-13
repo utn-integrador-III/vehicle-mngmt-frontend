@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import './muestrareservaciones.css';
-import Vehicle from './listaVehiculos';
 import ConfirmarFormulario from './confirmarformulario'; 
 
-const ReservationTicket = () => {
-  const [showlistado, setShowlistado] = useState(false); 
-  const [showConfirm, setShowConfirm] = useState(true);   
+const ReservationTicket = ({ onExit }) => {
+  const [showConfirm, setShowConfirm] = useState(true);
 
-  if (showlistado) {
-    return <Vehicle />;
-  }
+  const handleExit = () => {
+    if (onExit) {
+      onExit();
+    }
+  };
 
   return (
     <div className="ticket-container">
-      {/* ← Renders the modal on top of the content */}
       {showConfirm && (
         <ConfirmarFormulario onClose={() => setShowConfirm(false)} />
       )}
@@ -80,9 +79,7 @@ const ReservationTicket = () => {
           </div>
           <div className="ticket-buttons">
             <button className="btn-view">View pdf</button>
-            <button className="btn-exit"
-              onClick={() => setShowlistado(true)}
-            >
+            <button className="btn-exit" onClick={handleExit}>
               Exit
             </button>
           </div>
