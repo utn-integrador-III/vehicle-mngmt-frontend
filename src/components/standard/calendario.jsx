@@ -1,11 +1,85 @@
 import React, { useState } from "react";
 import "./calendario.css";
+import Reservaciones from "./reservaciones";
 
-const Calendario = ({ setActiveTab }) => {
+const horarios = Array.from({ length: 24 }, (_, i) => {
+  const hour12 = ((i + 11) % 12) + 1;
+  const ampm = i < 12 ? "AM" : "PM";
+  return `${hour12.toString().padStart(2, "0")}:00 ${ampm}`;
+});
+
+function chunkArray(arr, size) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
+}
+
+const HorarioPopup = ({ visible, onClose, onHoraSeleccionada }) => {
+  const [selected, setSelected] = useState(null);
+
+  const allOptions = ["Todo el día", ...horarios];
+  const rows = chunkArray(allOptions, 6);
+
+  if (!visible) return null;
+
+  return (
+    <div className="horario-modal-overlay">
+      <div className="horario-modal">
+        <h2 className="horario-title">Selecciona tu hora</h2>
+        <p className="horario-date">Date of reservation: 2025-08-17</p>
+        <div className="horario-grid-outer">
+          <div className="horario-grid horario-grid-centered">
+            {rows.map((row, i) => (
+              <div className="horario-row horario-row-centered" key={i}>
+                {row.map((hora) => (
+                  <button
+                    key={hora}
+                    className={`horario-btn${selected === hora ? " selected" : ""}${hora === "Todo el día" ? " all-day-btn" : ""}`}
+                    onClick={() => setSelected(hora)}
+                  >
+                    {hora}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="horario-footer">
+          <button
+            className="next-btn"
+            onClick={() => {
+              onHoraSeleccionada(selected);
+              setSelected(null);
+            }}
+            disabled={!selected}
+          >
+            Siguiente
+          </button>
+          <button
+            className="cancel-btn"
+            style={{ marginLeft: 16 }}
+            onClick={() => {
+              setSelected(null);
+              onClose();
+            }}
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Calendario = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
+  const [showHorario, setShowHorario] = useState(false);
+  const [showReservacion, setShowReservacion] = useState(false);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -41,7 +115,12 @@ const Calendario = ({ setActiveTab }) => {
   const handleDateClick = (day) => {
     const selected = new Date(currentYear, currentMonth, day);
     setSelectedDate(selected);
-    setActiveTab("horario"); // Ir a la vista de horarios
+    setShowHorario(true);
+  };
+
+  const handleHoraSeleccionada = (hora) => {
+    setShowHorario(false);
+    setShowReservacion(true);
   };
 
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
@@ -55,8 +134,17 @@ const Calendario = ({ setActiveTab }) => {
     daysArray.push(i);
   }
 
+  if (showReservacion) {
+    return <Reservaciones />;
+  }
+
   return (
     <div className="calendar-container">
+      <HorarioPopup
+        visible={showHorario}
+        onClose={() => setShowHorario(false)}
+        onHoraSeleccionada={handleHoraSeleccionada}
+      />
       <div className="calendar-header">
         <button className="nav-button" onClick={handlePrevMonth}>‹</button>
         <span className="calendar-title">
