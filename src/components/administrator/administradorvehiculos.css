@@ -372,13 +372,17 @@ html, body, #root {
   font-size: 13px;
   border: 1px solid #999;
   border-radius: 5px;
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; 
+  color: #000; 
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
 }
 
 .vehiculo-botones button:hover {
-  background-color: #e0e0e0;
+  background-color: #e0e0e0; /* Azul más intenso al pasar el mouse */
 }
+
 
 .campo-anio-editar {
   margin-top: 12px;
@@ -391,7 +395,10 @@ html, body, #root {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
 }
+
 .modal-ver {
   background-color: white;
   border-radius: 10px;

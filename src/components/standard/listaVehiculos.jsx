@@ -1,74 +1,39 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import logo from "../../images/logo-utn.png";
 import "./ListadoVehiculos.css";
 
-const initialVehicles = [
-  {
-    id: 1,
-    model: "Nissan Frontier",
-    plate: "ACT-478",
-    mode: "Automatic",
-    photo:
-      "https://www.nissanautoferro.com/wp-content/uploads/2022/05/nueva-frontier-s-4x2-mt-1.png",
-  },
-  {
-    id: 2,
-    model: "Toyota Rush",
-    plate: "BAT-123",
-    mode: "Automatic",
-    photo:
-      "https://www.toyotacr.com/uploads/family/7174cd099fd106eb448a2256c99809509d96903d.png",
-  },
-  {
-    id: 3,
-    model: "Toyota Hiace",
-    plate: "HYA-947",
-    mode: "Manual",
-    photo:
-      "https://cdn-api.toyotacr.com/toyotacr_website/media/cache/hero_bg_small/uploads/model/8b85d9a3743860e529c0fd0c3adc1b965e4f4938.png",
-  },
-  {
-    id: 4,
-    model: "Tesla Model S",
-    plate: "AJD-834",
-    mode: "Automatic",
-    photo:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo4TMPCIgoeW1tQvN0A8K5F4_D9kqxYWx4fw&s",
-  },
-  {
-    id: 5,
-    model: "Chevrolet Groove",
-    plate: "LMN-794",
-    mode: "Automatic",
-    photo:
-      "https://www.inalcochevrolet.cl/content/dam/chevrolet/sa/cl/es/master/index/models/groove/2-colorizer/GGB.png?imwidth=1920",
-  },
-  {
-    id: 6,
-    model: "Kia Sportage",
-    plate: "XYZ-991",
-    mode: "Manual",
-    photo:
-      "https://www.kia.com/content/dam/kwcms/kme/global/en/assets/vehicles/kia-sportage-nq5-my22/discover/kia-sportage-ice-gls-my22-trimlist.png",
-  },
-  {
-    id: 7,
-    model: "Hyundai Tucson",
-    plate: "TUC-555",
-    mode: "Automatic",
-    photo:
-      "https://images.dealer.com/ddc/vehicles/2019/Hyundai/Tucson/SUV/perspective/front-left/2019_24.png",
-  },
-];
-
 const ListadoVehiculos = ({ onReservarClick }) => {
-  const [vehicles] = useState(initialVehicles);
+  const [vehicles, setVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const touchStartXRef = useRef(0);
   const touchEndXRef = useRef(0);
 
+  // === Traer vehículos desde backend ===
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/car"); // misma URL que funciona
+        if (response.data && response.data.data) {
+          const formattedVehicles = response.data.data.map((vehicle) => ({
+            id: vehicle.id,
+            model: vehicle.model,
+            plate: vehicle.plate,
+            mode: vehicle.type === "Automático" ? "Automatic" : "Manual",
+            photo: `data:image/png;base64,${vehicle.photo}`,
+          }));
+          setVehicles(formattedVehicles);
+        }
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      }
+    };
+    fetchVehicles();
+  }, []);
+
+  // === Manejo touch carousel ===
   const handleTouchStart = (e) => {
     touchStartXRef.current = e.touches[0].clientX;
   };
@@ -79,7 +44,6 @@ const ListadoVehiculos = ({ onReservarClick }) => {
 
   const handleTouchEnd = () => {
     const diff = touchStartXRef.current - touchEndXRef.current;
-
     if (diff > 50 && currentIndex < filteredVehicles.length - 3) {
       setCurrentIndex((prev) => Math.min(prev + 1, filteredVehicles.length - 3));
     } else if (diff < -50 && currentIndex > 0) {
@@ -87,6 +51,7 @@ const ListadoVehiculos = ({ onReservarClick }) => {
     }
   };
 
+  // === Manejo búsqueda ===
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     setCurrentIndex(0);
@@ -103,6 +68,7 @@ const ListadoVehiculos = ({ onReservarClick }) => {
 
   const visibleVehicles = filteredVehicles.slice(currentIndex, currentIndex + 3);
 
+  // === Navegación carousel ===
   const handlePrev = () => {
     setCurrentIndex((prev) => Math.max(prev - 1, 0));
   };
@@ -165,7 +131,7 @@ const ListadoVehiculos = ({ onReservarClick }) => {
                   </div>
                   <button
                     className="btn btn-primary reservation-button"
-                    onClick={onReservarClick}
+                    onClick={() => onReservarClick(vehicle.id)}
                   >
                     Reservación
                   </button>
