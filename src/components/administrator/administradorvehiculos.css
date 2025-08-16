@@ -370,9 +370,9 @@ html, body, #root {
 .vehiculo-botones button {
   padding: 6px 10px;
   font-size: 13px;
-  border: none;
+  border: 1px solid #999;
   border-radius: 5px;
-  background-color: #dcdcdc; 
+  background-color: #f0f0f0; 
   color: #000; 
   cursor: pointer;
   font-weight: bold;
@@ -380,7 +380,7 @@ html, body, #root {
 }
 
 .vehiculo-botones button:hover {
-  background-color: #0055aa; /* Azul más intenso al pasar el mouse */
+  background-color: #e0e0e0; /* Azul más intenso al pasar el mouse */
 }
 
 
