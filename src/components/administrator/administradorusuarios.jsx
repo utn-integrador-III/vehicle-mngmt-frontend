@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './administradorusuarios.css';
 
 export default function AdministradorUsuarios() {
   const [showModal, setShowModal] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
+  const [editId, setEditId] = useState(null);
   const [usuarios, setUsuarios] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -11,14 +12,31 @@ export default function AdministradorUsuarios() {
     nombre: '',
     apellidos: '',
     correo: '',
-    contrasena: '',
-    tipoUsuario: 'Administrador',
+    contraseña: '',
+    tipoUsuario: 'admin',
   });
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [usuarioAEliminar, setUsuarioAEliminar] = useState(null);
-
   const [busqueda, setBusqueda] = useState('');
+
+  const API_BASE = 'http://localhost:8000/auth'; // Cambiar si tu API está en otro host/puerto
+
+  // Traer todos los usuarios al iniciar
+  useEffect(() => {
+    fetchUsuarios();
+  }, []);
+
+  const fetchUsuarios = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/all`);
+      if (res.data && res.data.data) {
+        setUsuarios(res.data.data);
+      }
+    } catch (err) {
+      console.error('Error al traer usuarios:', err);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -27,48 +45,98 @@ export default function AdministradorUsuarios() {
     });
   };
 
-  const handleSave = () => {
-    if (editIndex !== null) {
-      const actualizados = [...usuarios];
-      actualizados[editIndex] = formData;
-      setUsuarios(actualizados);
-      setEditIndex(null);
-    } else {
-      setUsuarios([...usuarios, formData]);
+  const handleSave = async () => {
+    try {
+      if (editId) {
+        // PUT actualizar usuario
+        const res = await axios.put(`${API_BASE}/update/${editId}`, {
+          cedula: formData.cedula,
+          nombre: formData.nombre,
+          apellidos: formData.apellidos,
+          correo: formData.correo,
+          contraseña: formData.contrasena,
+          rol: formData.tipoUsuario,
+        });
+
+        if (res.data && res.data.data) {
+          // Reemplazar el usuario actualizado en el estado
+          setUsuarios((prev) =>
+            prev.map((u) => (u._id === editId ? res.data.data : u))
+          );
+        }
+      } else {
+        // POST crear usuario
+        const res = await axios.post(`${API_BASE}/register`, {
+          cedula: formData.cedula,
+          nombre: formData.nombre,
+          apellidos: formData.apellidos,
+          correo: formData.correo,
+          contraseña: formData.contraseña,
+          rol: formData.tipoUsuario,
+        });
+
+        if (res.data && res.data.data) {
+          setUsuarios([...usuarios, res.data.data]);
+        }
+      }
+
+      // Reset form
+      setFormData({
+        cedula: '',
+        nombre: '',
+        apellidos: '',
+        correo: '',
+        contraseña: '',
+        tipoUsuario: 'admin',
+      });
+      setEditId(null);
+      setShowModal(false);
+      setBusqueda('');
+    } catch (err) {
+      console.error('Error al guardar usuario:', err);
     }
-
-    setFormData({
-      cedula: '',
-      nombre: '',
-      apellidos: '',
-      correo: '',
-      contrasena: '',
-      tipoUsuario: 'Administrador',
-    });
-
-    setShowModal(false);
-    setBusqueda('');
   };
 
-  const confirmarEliminar = (index) => {
-    setUsuarioAEliminar(usuarios[index]);
+  const confirmarEliminar = (id) => {
+    const usuario = usuarios.find((u) => u._id === id);
+    setUsuarioAEliminar(usuario);
     setShowConfirmModal(true);
   };
 
-  const handleDeleteConfirmado = () => {
-    const nuevosUsuarios = usuarios.filter(
-      (usuario) => usuario.cedula !== usuarioAEliminar.cedula
-    );
-    setUsuarios(nuevosUsuarios);
-    setShowConfirmModal(false);
-    setUsuarioAEliminar(null);
-    setBusqueda('');
+  const handleDeleteConfirmado = async () => {
+    try {
+      if (!usuarioAEliminar) return;
+      await axios.delete(`${API_BASE}/delete/${usuarioAEliminar._id}`);
+      setUsuarios((prev) =>
+        prev.filter((u) => u._id !== usuarioAEliminar._id)
+      );
+      setShowConfirmModal(false);
+      setUsuarioAEliminar(null);
+      setBusqueda('');
+    } catch (err) {
+      console.error('Error al eliminar usuario:', err);
+    }
   };
 
-  const handleEdit = (index) => {
-    setFormData(usuarios[index]);
-    setEditIndex(index);
-    setShowModal(true);
+  const handleEdit = async (id) => {
+    try {
+      const res = await axios.get(`${API_BASE}/get/${id}`);
+      if (res.data && res.data.data) {
+        const user = res.data.data;
+        setFormData({
+          cedula: user.cedula || '',
+          nombre: user.nombre || '',
+          apellidos: user.apellidos || '',
+          correo: user.correo || '',
+          contraseña: user.contraseña || '',
+          tipoUsuario: user.rol || 'admin',
+        });
+        setEditId(user._id);
+        setShowModal(true);
+      }
+    } catch (err) {
+      console.error('Error al traer usuario por ID:', err);
+    }
   };
 
   const usuariosFiltrados = usuarios.filter((usuario) =>
@@ -80,7 +148,7 @@ export default function AdministradorUsuarios() {
       <h3 className="usu-section-title">Listado de Usuarios</h3>
 
       <div className="usu-toolbar">
-        <button className="usu-add-btn" onClick={() => { setShowModal(true); setEditIndex(null); }}>
+        <button className="usu-add-btn" onClick={() => { setShowModal(true); setEditId(null); }}>
           ➕ Agregar Usuario
         </button>
         <div className="usu-search-bar">
@@ -90,91 +158,49 @@ export default function AdministradorUsuarios() {
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
-          <button className="usu-search-btn" onClick={() => {}}>🔍</button>
+          <button className="usu-search-btn">🔍</button>
         </div>
       </div>
 
       {/* Modal de agregar/editar */}
       {showModal && (
-        <div className="usu-modal-overlay" onClick={() => { setShowModal(false); setEditIndex(null); }}>
+        <div className="usu-modal-overlay" onClick={() => { setShowModal(false); setEditId(null); }}>
           <div className="usu-modal" onClick={(e) => e.stopPropagation()}>
             <div className="usu-modal-header">
-              <h3>{editIndex !== null ? 'Editar Usuario' : 'Agregar Usuario'}</h3>
+              <h3>{editId ? 'Editar Usuario' : 'Agregar Usuario'}</h3>
             </div>
 
             <div className="usu-input-row">
               <label htmlFor="cedula">Cédula</label>
-              <input
-                id="cedula"
-                name="cedula"
-                value={formData.cedula}
-                onChange={handleChange}
-                type="text"
-              />
+              <input id="cedula" name="cedula" value={formData.cedula} onChange={handleChange} type="text" />
             </div>
-
             <div className="usu-input-row">
               <label htmlFor="nombre">Nombre</label>
-              <input
-                id="nombre"
-                name="nombre"
-                value={formData.nombre}
-                onChange={handleChange}
-                type="text"
-              />
+              <input id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} type="text" />
             </div>
-
             <div className="usu-input-row">
               <label htmlFor="apellidos">Apellidos</label>
-              <input
-                id="apellidos"
-                name="apellidos"
-                value={formData.apellidos}
-                onChange={handleChange}
-                type="text"
-              />
+              <input id="apellidos" name="apellidos" value={formData.apellidos} onChange={handleChange} type="text" />
             </div>
-
             <div className="usu-input-row">
               <label htmlFor="correo">Correo</label>
-              <input
-                id="correo"
-                name="correo"
-                value={formData.correo}
-                onChange={handleChange}
-                type="email"
-              />
+              <input id="correo" name="correo" value={formData.correo} onChange={handleChange} type="email" />
             </div>
-
             <div className="usu-input-row">
-              <label htmlFor="contrasena">Contraseña</label>
-              <input
-                id="contrasena"
-                name="contrasena"
-                value={formData.contrasena}
-                onChange={handleChange}
-                type="password"
-              />
+              <label htmlFor="contraseña">Contraseña</label>
+              <input id="contraseña" name="contraseña" value={formData.contraseña} onChange={handleChange} type="password" />
             </div>
-
             <div className="usu-input-row">
               <label htmlFor="tipoUsuario">Tipo Usuario</label>
-              <select
-                id="tipoUsuario"
-                name="tipoUsuario"
-                value={formData.tipoUsuario}
-                onChange={handleChange}
-              >
-                <option value="Administrador">Admin</option>
-                <option value="Usuario">Usuario</option>
+              <select id="tipoUsuario" name="tipoUsuario" value={formData.tipoUsuario} onChange={handleChange}>
+                <option value="admin">admin</option>
+                <option value="usuario">usuario</option>
               </select>
             </div>
 
             <div className="usu-modal-buttons">
               <button className="usu-save-btn" onClick={handleSave}>Guardar</button>
-              <button className="usu-cancel-btn" onClick={() => { setShowModal(false); setEditIndex(null); }}>
-                Cancelar
-              </button>
+              <button className="usu-cancel-btn" onClick={() => { setShowModal(false); setEditId(null); }}>Cancelar</button>
             </div>
           </div>
         </div>
@@ -182,24 +208,21 @@ export default function AdministradorUsuarios() {
 
       {/* Tarjetas */}
       <div className="usu-card-container">
-        {usuariosFiltrados.map((usuario, index) => {
-          const originalIndex = usuarios.findIndex(u => u.cedula === usuario.cedula);
-          return (
-            <div key={index} className="usu-card">
-              <h4>{usuario.tipoUsuario}</h4>
-              <ul>
-                <li><strong>•</strong> {usuario.nombre}</li>
-                <li><strong>•</strong> {usuario.apellidos}</li>
-                <li><strong>•</strong> {usuario.correo}</li>
-                <li><strong>•</strong> {usuario.cedula}</li>
-              </ul>
-              <div className="usu-card-buttons">
-                <button className="usu-edit-btn" onClick={() => handleEdit(originalIndex)}>Editar</button>
-                <button className="usu-delete-btn" onClick={() => confirmarEliminar(originalIndex)}>Eliminar</button>
-              </div>
+        {usuariosFiltrados.map((usuario) => (
+          <div key={usuario._id} className="usu-card">
+            <h4>{usuario.rol}</h4>
+            <ul>
+              <li><strong>•</strong> {usuario.nombre}</li>
+              <li><strong>•</strong> {usuario.apellidos}</li>
+              <li><strong>•</strong> {usuario.correo}</li>
+              <li><strong>•</strong> {usuario.cedula}</li>
+            </ul>
+            <div className="usu-card-buttons">
+              <button className="usu-edit-btn" onClick={() => handleEdit(usuario._id)}>Editar</button>
+              <button className="usu-delete-btn" onClick={() => confirmarEliminar(usuario._id)}>Eliminar</button>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       {/* Modal de confirmación */}
@@ -211,12 +234,8 @@ export default function AdministradorUsuarios() {
             </h3>
             <p>¿Estás seguro que deseas borrar este usuario de la lista?</p>
             <div className="usu-modal-buttons">
-              <button className="usu-delete-confirm-btn" onClick={handleDeleteConfirmado}>
-                Aceptar
-              </button>
-              <button className="usu-cancel-btn" onClick={() => setShowConfirmModal(false)}>
-                Cancelar
-              </button>
+              <button className="usu-delete-confirm-btn" onClick={handleDeleteConfirmado}>Aceptar</button>
+              <button className="usu-cancel-btn" onClick={() => setShowConfirmModal(false)}>Cancelar</button>
             </div>
           </div>
         </div>
