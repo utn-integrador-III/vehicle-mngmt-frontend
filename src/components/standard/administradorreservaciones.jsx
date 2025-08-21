@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import calendar from "../../images/calendarioicono.png";
 import "./administradorreservaciones.css";
+import ReservationTicket from "./muestrareservaciones"; 
 
 export default function AdministradorReservaciones() {
   const [tab, setTab] = useState("pendientes"); // "pendientes" | "completadas"
@@ -8,17 +9,20 @@ export default function AdministradorReservaciones() {
   const [date, setDate] = useState(""); // YYYY-MM-DD
   const dateInputRef = useRef(null);
 
+  const [showTicket, setShowTicket] = useState(false);
+  const [selectedBoleta, setSelectedBoleta] = useState(null);
+
   // Datos de ejemplo (usuario estándar)
   const boletas = [
     // Pendientes
-    { id: 1, codigo: "ABC123", marca: "Toyota", fecha: "2025-08-17", estado: "pendientes" },
-    { id: 2, codigo: "MNO654", marca: "Kia",    fecha: "2025-08-20", estado: "pendientes" },
-    { id: 3, codigo: "QWE321", marca: "Ford",   fecha: "2025-08-21", estado: "pendientes" },
+    { id: 1, codigo: "ABC123", marca: "Toyota",    fecha: "2025-08-17", estado: "pendientes" },
+    { id: 2, codigo: "MNO654", marca: "Kia",       fecha: "2025-08-20", estado: "pendientes" },
+    { id: 3, codigo: "QWE321", marca: "Ford",      fecha: "2025-08-21", estado: "pendientes" },
 
     // Completadas (aceptadas o rechazadas)
-    { id: 4, codigo: "ZZZ111", marca: "Toyota",   fecha: "2025-08-17", estado: "completadas", resultado: "aceptada" },
-    { id: 5, codigo: "YYY222", marca: "Hyundai",  fecha: "2025-08-18", estado: "completadas", resultado: "aceptada" },
-    { id: 6, codigo: "XXX333", marca: "Chevrolet",fecha: "2025-08-19", estado: "completadas", resultado: "rechazada" },
+    { id: 4, codigo: "ZZZ111", marca: "Toyota",    fecha: "2025-08-17", estado: "completadas", resultado: "aceptada",  motivo: "Se aprobó por disponibilidad." },
+    { id: 5, codigo: "YYY222", marca: "Hyundai",   fecha: "2025-08-18", estado: "completadas", resultado: "aceptada" },
+    { id: 6, codigo: "XXX333", marca: "Chevrolet", fecha: "2025-08-19", estado: "completadas", resultado: "rechazada", motivo: "El vehículo no está disponible en esa fecha." },
   ];
 
   // Filtro por pestaña + búsqueda por código + fecha exacta
@@ -30,6 +34,18 @@ export default function AdministradorReservaciones() {
 
     return matchCodigo && matchFecha;
   });
+
+  if (showTicket && selectedBoleta) {
+    return (
+      <ReservationTicket
+        boleta={selectedBoleta}
+        onExit={() => {
+          setShowTicket(false);
+          setSelectedBoleta(null);
+        }}
+      />
+    );
+  }
 
   return (
     <div>
@@ -100,7 +116,12 @@ export default function AdministradorReservaciones() {
                   <>
                     <strong className="status-text">Pendiente</strong>
                     <div className="action-buttons">
-                      <button className="btn-primary">Visualizar</button>
+                      <button
+                        className="btn-primary"
+                        onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}  
+                      >
+                        Visualizar
+                      </button>
                     </div>
                   </>
                 ) : (
@@ -113,7 +134,12 @@ export default function AdministradorReservaciones() {
                       {b.resultado === "aceptada" ? "Aceptada" : "Rechazada"}
                     </span>
                     <div className="action-buttons">
-                      <button className="btn-primary">Visualizar</button>
+                      <button
+                        className="btn-primary"
+                        onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}  
+                      >
+                        Visualizar
+                      </button>
                       <button className="btn-secondary">Borrar</button>
                     </div>
                   </>
@@ -128,4 +154,5 @@ export default function AdministradorReservaciones() {
     </div>
   );
 }
+
 
