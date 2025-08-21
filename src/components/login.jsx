@@ -20,10 +20,9 @@ const Login = ({ onLoginSuccess }) => {
       });
 
       const data = response.data.data;
-
       if (data && data.rol) {
-        // Construir el nombre completo
         const nombreCompleto = `${data.nombre} ${data.apellidos}`;
+        localStorage.setItem("loggedUserName", nombreCompleto); // Guardar usuario logeado
         if (onLoginSuccess) onLoginSuccess(data.rol, nombreCompleto);
       } else {
         setError("Respuesta inválida del servidor");
@@ -42,12 +41,10 @@ const Login = ({ onLoginSuccess }) => {
   return (
     <>
       <div className="login-background"></div>
-
       <div className="login-popup">
         <div className="login-left">
           <img src={driverImage} alt="Conductor feliz" />
         </div>
-
         <div className="login-right">
           <h2 className="welcome-title">Welcome Back!</h2>
           <p className="subtitle">Sign in your account</p>
@@ -60,7 +57,6 @@ const Login = ({ onLoginSuccess }) => {
               placeholder="60189670"
               required
             />
-
             <label>Password</label>
             <input
               type="password"
@@ -69,9 +65,7 @@ const Login = ({ onLoginSuccess }) => {
               placeholder="***"
               required
             />
-
             {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
-
             <button type="submit" disabled={loading}>
               {loading ? "Ingresando..." : "Login"}
             </button>

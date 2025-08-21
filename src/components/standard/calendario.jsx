@@ -18,7 +18,6 @@ function chunkArray(arr, size) {
 
 const HorarioPopup = ({ visible, onClose, onHoraSeleccionada }) => {
   const [selected, setSelected] = useState(null);
-
   const allOptions = ["Todo el día", ...horarios];
   const rows = chunkArray(allOptions, 6);
 
@@ -28,7 +27,6 @@ const HorarioPopup = ({ visible, onClose, onHoraSeleccionada }) => {
     <div className="horario-modal-overlay">
       <div className="horario-modal">
         <h2 className="horario-title">Selecciona tu hora</h2>
-        <p className="horario-date">Date of reservation: 2025-08-17</p>
         <div className="horario-grid-outer">
           <div className="horario-grid horario-grid-centered">
             {rows.map((row, i) => (
@@ -73,7 +71,7 @@ const HorarioPopup = ({ visible, onClose, onHoraSeleccionada }) => {
   );
 };
 
-const Calendario = ({ setActiveTab }) => {
+const Calendario = ({ setActiveTab, boletas, setBoletas, vehiculoSeleccionado }) => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -86,39 +84,37 @@ const Calendario = ({ setActiveTab }) => {
     "July", "August", "September", "October", "November", "December",
   ];
 
-  const getDaysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (month, year) => {
-    return new Date(year, month, 1).getDay();
-  };
+  const getDaysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (month, year) => new Date(year, month, 1).getDay();
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
       setCurrentMonth(11);
       setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-    }
+    } else setCurrentMonth(currentMonth - 1);
   };
 
   const handleNextMonth = () => {
     if (currentMonth === 11) {
       setCurrentMonth(0);
       setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-    }
+    } else setCurrentMonth(currentMonth + 1);
   };
 
   const handleDateClick = (day) => {
     const selected = new Date(currentYear, currentMonth, day);
     setSelectedDate(selected);
     setShowHorario(true);
+
+    localStorage.setItem("reservationDate", JSON.stringify({
+      day: selected.getDate(),
+      month: selected.getMonth() + 1,
+      year: selected.getFullYear()
+    }));
   };
 
   const handleHoraSeleccionada = (hora) => {
+    localStorage.setItem("reservationHour", hora);
     setShowHorario(false);
     setShowReservacion(true);
   };
@@ -127,16 +123,18 @@ const Calendario = ({ setActiveTab }) => {
   const firstDay = (getFirstDayOfMonth(currentMonth, currentYear) + 6) % 7;
 
   const daysArray = [];
-  for (let i = 0; i < firstDay; i++) {
-    daysArray.push(null);
-  }
-  for (let i = 1; i <= daysInMonth; i++) {
-    daysArray.push(i);
-  }
+  for (let i = 0; i < firstDay; i++) daysArray.push(null);
+  for (let i = 1; i <= daysInMonth; i++) daysArray.push(i);
 
-  if (showReservacion) {
-    return <Reservaciones onExit={() => setActiveTab("listado")} />;
-  }
+  if (showReservacion) 
+    return (
+      <Reservaciones 
+        onExit={() => setActiveTab("listado")} 
+        boletas={boletas} 
+        setBoletas={setBoletas} 
+        vehiculo={vehiculoSeleccionado} 
+      />
+    );
 
   return (
     <div className="calendar-container">
@@ -164,20 +162,15 @@ const Calendario = ({ setActiveTab }) => {
           <div
             key={index}
             className={`calendar-cell ${
-              day === (selectedDate?.getDate()) &&
+              day === selectedDate?.getDate() &&
               currentMonth === selectedDate?.getMonth() &&
-              currentYear === selectedDate?.getFullYear()
-                ? "selected"
-                : ""
+              currentYear === selectedDate?.getFullYear() ? "selected" : ""
             }`}
             onClick={() => day && handleDateClick(day)}
           >
             {day || ""}
           </div>
         ))}
-      </div>
-      <div className="calendar-footer">
-        <button className="done-button">Done</button>
       </div>
     </div>
   );
