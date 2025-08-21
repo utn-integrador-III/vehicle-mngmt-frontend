@@ -2,34 +2,19 @@ import React, { useState } from 'react';
 import calendar from "../../images/calendarioicono.png";
 import './administradorboletas.css';
 
-export default function Boletas() {
+export default function Boletas({ boletas, setBoletas, setActiveTab, setSelectedBoleta }) {
   const [tab, setTab] = useState("en-progreso");
   const [search, setSearch] = useState("");
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailToShow, setEmailToShow] = useState("");
 
-  const boletas = [
-    // EN PROGRESO
-    { id: 1, codigo: "ABC123", nombre: "Solano Mora Ruben", marca: "Toyota", fecha: "2025-08-17", estado: "en-progreso" },
-    { id: 2, codigo: "XYZ789", nombre: "María Pérez", marca: "Hyundai", fecha: "2025-08-18", estado: "en-progreso" },
-    { id: 3, codigo: "JKL456", nombre: "Carlos Jiménez", marca: "Honda", fecha: "2025-08-19", estado: "en-progreso" },
-
-    // PENDIENTES
-    { id: 4, codigo: "BAT123", nombre: "Luis Rodríguez", marca: "Toyota", fecha: "2025-08-17", estado: "pendientes" },
-    { id: 5, codigo: "MNO654", nombre: "Ana Gómez", marca: "Kia", fecha: "2025-08-20", estado: "pendientes" },
-    { id: 6, codigo: "QWE321", nombre: "Pedro Sánchez", marca: "Ford", fecha: "2025-08-21", estado: "pendientes" },
-
-    // CANCELADAS
-    { id: 7, codigo: "HYA947", nombre: "Juan Herrera", marca: "Toyota", fecha: "2025-08-17", estado: "canceladas" },
-    { id: 8, codigo: "RTY852", nombre: "Laura Martínez", marca: "Chevrolet", fecha: "2025-08-22", estado: "canceladas" },
-    { id: 9, codigo: "UIO963", nombre: "Miguel Castro", marca: "Mazda", fecha: "2025-08-23", estado: "canceladas" },
-  ];
-
-  const getEstadoTexto = () => {
+  const getEstadoTexto = (b) => {
+    if (b.estadoDetalle) return b.estadoDetalle; // "Aceptada" o "Rechazada" o "Cancelada"
     if (tab === "pendientes") return "Pendiente";
     if (tab === "en-progreso") return "En progreso";
     if (tab === "canceladas") return "Cancelada";
   };
 
-  // Filtrado por tab y búsqueda
   const boletasFiltradas = boletas.filter(
     (b) =>
       b.estado === tab &&
@@ -40,9 +25,19 @@ export default function Boletas() {
       )
   );
 
+  const handleContact = (b) => {
+    setEmailToShow(b.email || "sin-correo@ejemplo.com");
+    setShowEmailModal(true);
+  };
+
+  const handleDelete = (b) => {
+    if (window.confirm(`¿Borrar la boleta ${b.codigo}?`)) {
+      setBoletas(prev => prev.filter(x => x.id !== b.id));
+    }
+  };
+
   return (
     <div>
-      {/* Tabs */}
       <div className="tabs">
         <button
           className={`tab-btn ${tab === "pendientes" ? "active" : ""}`}
@@ -64,7 +59,6 @@ export default function Boletas() {
         </button>
       </div>
 
-      {/* Buscador */}
       <div className="search-wrapper">
         <div className="search-container">
           <img
@@ -98,9 +92,39 @@ export default function Boletas() {
                 <p>{b.fecha}</p>
               </div>
               <div className="boleta-actions">
-                <strong>{getEstadoTexto()}</strong>
-                <button className="btn-primary">Visualizar</button>
-                <button className="btn-secondary">Contactar</button>
+                <strong>{getEstadoTexto(b)}</strong>
+
+                {tab === "pendientes" ? (
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      setSelectedBoleta(b);
+                      setActiveTab("estadoboleta");
+                    }}
+                  >
+                    Pendiente
+                  </button>
+                ) : (
+                  <button
+                    className="btn-primary"
+                    onClick={() => {
+                      setSelectedBoleta(b);
+                      setActiveTab("estadoboleta");
+                    }}
+                  >
+                    Visualizar
+                  </button>
+                )}
+
+                {tab === "canceladas" ? (
+                  <button className="btn-secondary" onClick={() => handleDelete(b)}>
+                    Borrar
+                  </button>
+                ) : (
+                  <button className="btn-secondary" onClick={() => handleContact(b)}>
+                    Contactar
+                  </button>
+                )}
               </div>
             </div>
           ))
@@ -108,7 +132,21 @@ export default function Boletas() {
           <p className="no-result">No se encontraron resultados</p>
         )}
       </div>
+
+      {/* Modal de correo */}
+      {showEmailModal && (
+        <div className="ab-modal-overlay" onClick={() => setShowEmailModal(false)}>
+          <div className="ab-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Contacto</h3>
+            <p>Correo del solicitante:</p>
+            <p><strong>{emailToShow}</strong></p>
+            <div className="ab-modal-buttons">
+              <button onClick={() => setShowEmailModal(false)}>Cerrar</button>
+              <a href={`mailto:${emailToShow}`}><button>Enviar correo</button></a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
