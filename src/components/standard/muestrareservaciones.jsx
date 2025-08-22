@@ -7,7 +7,7 @@ const ReservationTicket = ({ onExit, boleta }) => {
   const [showConfirm, setShowConfirm] = useState(!boleta);
   const [showReason, setShowReason] = useState(false);
 
-  // --- Tu rama: datos dinámicos ---
+  // --- Nuevos datos dinámicos ---
   const [data, setData] = useState(null);
   const [vehicleData, setVehicleData] = useState(null);
 
@@ -26,7 +26,7 @@ const ReservationTicket = ({ onExit, boleta }) => {
     }
   }, [boleta]);
 
-  // --- Dev: lógica de status sin tocar ---
+  // --- Dev: lógica de status ---
   const getStatusKey = () => {
     if (!boleta) return "pending";
     if (boleta.estado === "pendientes") return "pending";
@@ -44,7 +44,7 @@ const ReservationTicket = ({ onExit, boleta }) => {
 
   const handleExit = () => { if (onExit) onExit(); };
 
-  // --- Dev: JSX intacto ---
+  // --- JSX ajustado conservando líneas de Dev ---
   return (
     <div className="ticket-container">
       {showConfirm && <ConfirmarFormulario onClose={() => setShowConfirm(false)} />}
@@ -146,4 +146,3 @@ const ReservationTicket = ({ onExit, boleta }) => {
 };
 
 export default ReservationTicket;
-

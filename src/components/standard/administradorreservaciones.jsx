@@ -46,7 +46,6 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
   });
 
   if (showTicket && selectedBoleta) {
-    // Mantener dev intacto
     return (
       <ReservationTicket
         boleta={selectedBoleta}
@@ -87,17 +86,14 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
               <div className="boleta-info">
                 <p>Boleta {b.codigo}</p>
                 <p>{b.fecha}</p>
-                <p>{b.vehiculo || b.marca}</p> {/* Mostrar vehículo si existe */}
+                <p>{b.vehiculo || b.marca}</p>
               </div>
               <div className="boleta-actions">
                 {tab === "pendientes" ? (
                   <>
                     <strong className="status-text">Pendiente</strong>
                     <div className="action-buttons">
-                      {propSetBoletas && (
-                       <button className="btn-primary" onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}>Visualizar</button>
-                      )}
-                     
+                      <button className="btn-primary" onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}>Visualizar</button>
                     </div>
                   </>
                 ) : (
@@ -123,3 +119,4 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
     </div>
   );
 }
+
