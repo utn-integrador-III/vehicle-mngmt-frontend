@@ -3,11 +3,9 @@ import './muestrareservaciones.css';
 import ConfirmarFormulario from './confirmarformulario'; 
 
 const ReservationTicket = ({ onExit, boleta }) => {
-  // --- Dev: no se modifica ---
   const [showConfirm, setShowConfirm] = useState(!boleta);
   const [showReason, setShowReason] = useState(false);
 
-  // --- Tu rama: datos dinámicos ---
   const [data, setData] = useState(null);
   const [vehicleData, setVehicleData] = useState(null);
 
@@ -26,7 +24,6 @@ const ReservationTicket = ({ onExit, boleta }) => {
     }
   }, [boleta]);
 
-  // --- Dev: lógica de status sin tocar ---
   const getStatusKey = () => {
     if (!boleta) return "pending";
     if (boleta.estado === "pendientes") return "pending";
@@ -44,11 +41,9 @@ const ReservationTicket = ({ onExit, boleta }) => {
 
   const handleExit = () => { if (onExit) onExit(); };
 
-  // --- Dev: JSX intacto ---
   return (
     <div className="ticket-container">
       {showConfirm && <ConfirmarFormulario onClose={() => setShowConfirm(false)} />}
-
       {showReason && (
         <div className="modal-overlay">
           <div className="modal">
@@ -73,11 +68,11 @@ const ReservationTicket = ({ onExit, boleta }) => {
             </div>
             <div className="ticket-field">
               <label>Vehicle plate</label>
-              <div className="value">{boleta?.codigo || vehicleData?.plate || "ABC34"}</div>
+              <div className="value">{boleta?.plate || vehicleData?.plate || "ABC34"}</div>
             </div>
             <div className="ticket-field">
               <label>Vehicle Brand</label>
-              <div className="value">{boleta?.marca || vehicleData?.model || "Toyota"}</div>
+              <div className="value">{boleta?.model || vehicleData?.model || "Toyota"}</div>
             </div>
           </div>
 
@@ -103,11 +98,11 @@ const ReservationTicket = ({ onExit, boleta }) => {
             </div>
             <div className="ticket-field">
               <label>Vehicle departure time</label>
-              <div className="value">{boleta?.departureTime || data?.departureTime || "16:00 🕓"}</div>
+              <div className="value">{boleta?.departureTime || data?.departureTime || "02:00 PM"}</div>
             </div>
             <div className="ticket-field">
               <label>Vehicle delivery time</label>
-              <div className="value">{boleta?.deliveryTime || data?.deliveryTime || "18:30 🕡"}</div>
+              <div className="value">{boleta?.deliveryTime || data?.deliveryTime || "04:30 PM"}</div>
             </div>
           </div>
 
@@ -125,16 +120,16 @@ const ReservationTicket = ({ onExit, boleta }) => {
           </div>
 
           <div className="ticket-row companions">
-            <div className="ticket-field">
-              <label>Companions</label>
-              <ul className="companion-list">
-                {boleta
-                  ? [boleta.comp1, boleta.comp2, boleta.comp3, boleta.comp4].filter(Boolean).map((c,i) => <li key={i}>{c}</li>)
-                  : [data?.comp1, data?.comp2, data?.comp3, data?.comp4].filter(Boolean).map((c,i) => <li key={i}>{c}</li>)
-                }
-              </ul>
-            </div>
-          </div>
+  <div className="ticket-field">
+    <label>Companions</label>
+    <ul className="companion-list">
+      {(boleta?.companions || data?.companions || []).map((c, i) => (
+        <li key={i}>{c}</li>
+      ))}
+    </ul>
+  </div>
+</div>
+
 
           <div className="ticket-buttons">
             <button className="btn-exit" onClick={handleExit}>Exit</button>
@@ -146,4 +141,3 @@ const ReservationTicket = ({ onExit, boleta }) => {
 };
 
 export default ReservationTicket;
-

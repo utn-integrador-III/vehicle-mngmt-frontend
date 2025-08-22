@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import calendar from "../../images/calendarioicono.png";
 import "./administradorreservaciones.css";
-import ReservationTicket from "./muestrareservaciones"; 
+import ReservationTicket from "./muestrareservaciones";
 
 export default function AdministradorReservaciones({ boletas: propBoletas, setBoletas: propSetBoletas }) {
   const [tab, setTab] = useState("pendientes"); // "pendientes" | "completadas"
@@ -12,61 +13,80 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
   const [showTicket, setShowTicket] = useState(false);
   const [selectedBoleta, setSelectedBoleta] = useState(null);
 
-  // Usar props si existen, sino usar datos de ejemplo de dev
-  const boletas = propBoletas || [
-    { id: 1, codigo: "ABC123", marca: "Toyota", fecha: "2025-08-17", estado: "pendientes" },
-    { id: 2, codigo: "MNO654", marca: "Kia", fecha: "2025-08-20", estado: "pendientes" },
-    { id: 3, codigo: "QWE321", marca: "Ford", fecha: "2025-08-21", estado: "pendientes" },
-    { id: 4, codigo: "ZZZ111", marca: "Toyota", fecha: "2025-08-17", estado: "completadas", resultado: "aceptada", motivo: "Se aprobó por disponibilidad." },
-    { id: 5, codigo: "YYY222", marca: "Hyundai", fecha: "2025-08-18", estado: "completadas", resultado: "aceptada" },
-    { id: 6, codigo: "XXX333", marca: "Chevrolet", fecha: "2025-08-19", estado: "completadas", resultado: "rechazada", motivo: "El vehículo no está disponible en esa fecha." },
-  ];
+  const [boletas, setBoletas] = useState(propBoletas || []);
+  const loggedUserId = localStorage.getItem("loggedUserId");
 
-  const setBoletas = propSetBoletas || (() => {}); // fallback si no viene prop
+  // Cargar boletas desde API
+  useEffect(() => {
+    const fetchBoletas = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/rental_requestId/${loggedUserId}`);
+        if (response.data?.data) {
+          const fetchedBoletas = response.data.data.map(b => ({
+            id: b._id, // React key
+            applicant: b.applicant,
+            direccion: b.direccion,
+            necesidad: b.necesidad,
+            departureTime: b.start_date || "",
+            estimate: b.estimate || "",
+            comp1: b.companions?.[0] || "",
+            comp2: b.companions?.[1] || "",
+            comp3: b.companions?.[2] || "",
+            comp4: b.companions?.[3] || "",
+            fecha: b.date ? `${b.date.year}-${String(b.date.month).padStart(2,"0")}-${String(b.date.day).padStart(2,"0")}` : "",
+            plate: b.plate,
+            marca: b.model,
+            model: b.model,
+            status: b.status,
+            estado: b.status === "approval" ? "completadas" : "pendientes",
+            resultado: b.status === "approval" ? "aceptada" : b.status === "rejected" ? "rechazada" : ""
+          }));
+          setBoletas(fetchedBoletas);
+          if (propSetBoletas) propSetBoletas(fetchedBoletas);
+        }
+      } catch (error) {
+        console.error("Error fetching boletas:", error);
+      }
+    };
+    if (loggedUserId) fetchBoletas();
+  }, [loggedUserId, propSetBoletas]);
 
-  // Función para finalizar boleta (solo si viene prop)
+  const setBoletasProp = propSetBoletas || (() => {});
+
+  // Finalizar boleta (solo si viene prop)
   const finalizarBoleta = (id) => {
-    if (!propSetBoletas) return; 
+    if (!propSetBoletas) return;
     const savedData = JSON.parse(localStorage.getItem("reservationData")) || {};
     propSetBoletas(prev =>
       prev.map(b =>
-        b.id === id
-          ? { ...b, estado: "completadas", resultado: "aceptada", ...savedData }
-          : b
+        b.id === id ? { ...b, estado: "completadas", resultado: "aceptada", ...savedData } : b
       )
     );
   };
 
-  // Filtrado por pestaña, código y fecha
-  const boletasFiltradas = boletas.filter((b) => {
+  const boletasFiltradas = boletas.filter(b => {
     if (b.estado !== tab) return false;
-    const matchCodigo = !search || b.codigo.toLowerCase().includes(search.toLowerCase());
+    const matchCodigo = !search || b.codigo?.toLowerCase().includes(search.toLowerCase());
     const matchFecha = !date || b.fecha === date;
     return matchCodigo && matchFecha;
   });
 
   if (showTicket && selectedBoleta) {
-    // Mantener dev intacto
     return (
       <ReservationTicket
         boleta={selectedBoleta}
-        onExit={() => {
-          setShowTicket(false);
-          setSelectedBoleta(null);
-        }}
+        onExit={() => { setShowTicket(false); setSelectedBoleta(null); }}
       />
     );
   }
 
   return (
     <div>
-      {/* Tabs */}
       <div className="tabs">
         <button className={`tab-btn ${tab === "pendientes" ? "active" : ""}`} onClick={() => setTab("pendientes")}>Pendientes</button>
         <button className={`tab-btn ${tab === "completadas" ? "active" : ""}`} onClick={() => setTab("completadas")}>Completadas</button>
       </div>
 
-      {/* Buscador por código + fecha */}
       <div className="search-wrapper">
         <div className="search-container">
           <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg" alt="lupa" className="search-icon" />
@@ -78,26 +98,22 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
         </div>
       </div>
 
-      {/* Lista de boletas */}
       <div className="boletas-list">
         {boletasFiltradas.length > 0 ? (
-          boletasFiltradas.map((b) => (
+          boletasFiltradas.map(b => (
             <div key={b.id} className="boleta-card">
               <div className="boleta-color"></div>
               <div className="boleta-info">
                 <p>Boleta {b.codigo}</p>
                 <p>{b.fecha}</p>
-                <p>{b.vehiculo || b.marca}</p> {/* Mostrar vehículo si existe */}
+                <p>{b.vehiculo || b.marca}</p>
               </div>
               <div className="boleta-actions">
                 {tab === "pendientes" ? (
                   <>
                     <strong className="status-text">Pendiente</strong>
                     <div className="action-buttons">
-                      {propSetBoletas && (
-                       <button className="btn-primary" onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}>Visualizar</button>
-                      )}
-                     
+                      <button className="btn-primary" onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}>Visualizar</button>
                     </div>
                   </>
                 ) : (
@@ -107,9 +123,7 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
                     </span>
                     <div className="action-buttons">
                       <button className="btn-primary" onClick={() => { setSelectedBoleta(b); setShowTicket(true); }}>Visualizar</button>
-                      {propSetBoletas && (
-                        <button className="btn-secondary" onClick={() => propSetBoletas(prev => prev.filter(x => x.id !== b.id))}>Borrar</button>
-                      )}
+                      <button className="btn-secondary" onClick={() => setBoletas(prev => prev.filter(x => x.id !== b.id))}>Borrar</button>
                     </div>
                   </>
                 )}

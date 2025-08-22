@@ -22,7 +22,11 @@ const Login = ({ onLoginSuccess }) => {
       const data = response.data.data;
       if (data && data.rol) {
         const nombreCompleto = `${data.nombre} ${data.apellidos}`;
-        localStorage.setItem("loggedUserName", nombreCompleto); // Guardar usuario logeado
+
+        // Guardar en localStorage
+        localStorage.setItem("loggedUserName", nombreCompleto); 
+        localStorage.setItem("loggedUserId", data.id); // 👈 Guardar ID del usuario
+
         if (onLoginSuccess) onLoginSuccess(data.rol, nombreCompleto);
       } else {
         setError("Respuesta inválida del servidor");
