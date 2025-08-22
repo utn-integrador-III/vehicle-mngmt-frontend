@@ -56,6 +56,19 @@ const ReservationTicket = ({ onExit, boleta }) => {
         </div>
       )}
 
+      {/* Modal para ver la razón del Rechazo */}
+      {showReason && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Rejection Reason</h3>
+            <p>{boleta?.motivo || "Reason not specified."}</p>
+            <div className="modal-buttons">
+              <button onClick={() => setShowReason(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="ticket-content">
         <h2>Reservation ticket information</h2>
         <p className="date">Reservation date: {boleta?.fecha || data?.fecha || "2025-08-17"}</p>
@@ -76,6 +89,7 @@ const ReservationTicket = ({ onExit, boleta }) => {
             </div>
           </div>
 
+
           <div className="ticket-row">
             <div className="ticket-field">
               <label>Vehicle address</label>
@@ -90,6 +104,7 @@ const ReservationTicket = ({ onExit, boleta }) => {
               <div className="value">{boleta?.necesidad || data?.necesidad || "Transfer to meeting"}</div>
             </div>
           </div>
+
 
           <div className="ticket-row">
             <div className="ticket-field">
@@ -116,8 +131,16 @@ const ReservationTicket = ({ onExit, boleta }) => {
               >
                 {statusLabel}
               </div>
+              <div
+                className={`status ${statusKey}`}
+                onClick={() => { if (statusKey === "rejected") setShowReason(true); }}
+                style={{ cursor: statusKey === "rejected" ? "pointer" : "default" }}
+              >
+                {statusLabel}
+              </div>
             </div>
           </div>
+
 
           <div className="ticket-row companions">
   <div className="ticket-field">

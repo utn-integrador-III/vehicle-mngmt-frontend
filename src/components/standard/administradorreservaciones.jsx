@@ -2,13 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import calendar from "../../images/calendarioicono.png";
 import "./administradorreservaciones.css";
-import ReservationTicket from "./muestrareservaciones";
+import ReservationTicket from "./muestrareservaciones"; 
 
 export default function AdministradorReservaciones({ boletas: propBoletas, setBoletas: propSetBoletas }) {
   const [tab, setTab] = useState("pendientes"); // "pendientes" | "completadas"
   const [search, setSearch] = useState("");
   const [date, setDate] = useState(""); // YYYY-MM-DD
   const dateInputRef = useRef(null);
+
+  const [showTicket, setShowTicket] = useState(false);
+  const [selectedBoleta, setSelectedBoleta] = useState(null);
 
   const [showTicket, setShowTicket] = useState(false);
   const [selectedBoleta, setSelectedBoleta] = useState(null);
