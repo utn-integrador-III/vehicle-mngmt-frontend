@@ -11,17 +11,16 @@ const ListadoVehiculos = ({ onReservarClick }) => {
   const touchStartXRef = useRef(0);
   const touchEndXRef = useRef(0);
 
-  // === Traer vehículos desde backend ===
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/car"); // misma URL que funciona
+        const response = await axios.get("http://localhost:8000/car");
         if (response.data && response.data.data) {
-          const formattedVehicles = response.data.data.map((vehicle) => ({
+          const formattedVehicles = response.data.data.map(vehicle => ({
             id: vehicle.id,
             model: vehicle.model,
             plate: vehicle.plate,
-            mode: vehicle.type === "Automático" ? "Automatic" : "Manual",
+            type: vehicle.type === "Automático" ? "Automatic" : "Manual",
             photo: `data:image/png;base64,${vehicle.photo}`,
           }));
           setVehicles(formattedVehicles);
@@ -33,51 +32,41 @@ const ListadoVehiculos = ({ onReservarClick }) => {
     fetchVehicles();
   }, []);
 
-  // === Manejo touch carousel ===
-  const handleTouchStart = (e) => {
-    touchStartXRef.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    touchEndXRef.current = e.touches[0].clientX;
-  };
-
+  const handleTouchStart = (e) => { touchStartXRef.current = e.touches[0].clientX; };
+  const handleTouchMove = (e) => { touchEndXRef.current = e.touches[0].clientX; };
   const handleTouchEnd = () => {
     const diff = touchStartXRef.current - touchEndXRef.current;
     if (diff > 50 && currentIndex < filteredVehicles.length - 3) {
-      setCurrentIndex((prev) => Math.min(prev + 1, filteredVehicles.length - 3));
+      setCurrentIndex(prev => Math.min(prev + 1, filteredVehicles.length - 3));
     } else if (diff < -50 && currentIndex > 0) {
-      setCurrentIndex((prev) => Math.max(prev - 1, 0));
+      setCurrentIndex(prev => Math.max(prev - 1, 0));
     }
   };
 
-  // === Manejo búsqueda ===
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentIndex(0);
-  };
+  const handleSearchChange = (event) => { setSearchTerm(event.target.value); setCurrentIndex(0); };
 
-  const filteredVehicles = vehicles.filter((vehicle) => {
+  const filteredVehicles = vehicles.filter(vehicle => {
     const lowerTerm = searchTerm.toLowerCase();
-    return (
-      vehicle.model.toLowerCase().includes(lowerTerm) ||
-      vehicle.plate.toLowerCase().includes(lowerTerm) ||
-      vehicle.mode.toLowerCase().includes(lowerTerm)
-    );
+    return vehicle.model.toLowerCase().includes(lowerTerm) ||
+           vehicle.plate.toLowerCase().includes(lowerTerm) ||
+           vehicle.type.toLowerCase().includes(lowerTerm);
   });
 
   const visibleVehicles = filteredVehicles.slice(currentIndex, currentIndex + 3);
 
-  // === Navegación carousel ===
-  const handlePrev = () => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  const handleReservarClick = (vehicle) => {
+    const loggedUserName = localStorage.getItem("loggedUserName") || "-";
+    const vehicleData = {
+      applicant: loggedUserName,
+      plate: vehicle.plate,
+      model: vehicle.model
+    };
+    localStorage.setItem("selectedVehicle", JSON.stringify(vehicleData));
+    if (onReservarClick) onReservarClick(vehicle);
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prev) =>
-      Math.min(prev + 1, filteredVehicles.length - 3)
-    );
-  };
+  const handlePrev = () => setCurrentIndex(prev => Math.max(prev - 1, 0));
+  const handleNext = () => setCurrentIndex(prev => Math.min(prev + 1, filteredVehicles.length - 3));
 
   return (
     <div className="container text-center">
@@ -92,62 +81,26 @@ const ListadoVehiculos = ({ onReservarClick }) => {
       </div>
 
       <div className="carousel-wrapper">
-        <button
-          className="nav-arrow left"
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-        >
-          &lt;
-        </button>
-
-        <div
-          className="carousel"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
+        <button className="nav-arrow left" onClick={handlePrev} disabled={currentIndex === 0}>&lt;</button>
+        <div className="carousel" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           {visibleVehicles.map((vehicle, idx) => {
             const isCenter = idx === 1;
             return (
-              <div
-                key={vehicle.id}
-                className={`vehicle-card ${isCenter ? "center-card" : "side-card"}`}
-              >
+              <div key={vehicle.id} className={`vehicle-card ${isCenter ? "center-card" : "side-card"}`}>
                 <div className="image-container">
-                  <img
-                    src={vehicle.photo}
-                    alt={vehicle.model}
-                    className="vehicle-photo card-img-top"
-                  />
-                  <div className="logo-overlay">
-                    <img src={logo} alt="Logo UTN" className="logo-utn" />
-                  </div>
+                  <img src={vehicle.photo} alt={vehicle.model} className="vehicle-photo card-img-top"/>
+                  <div className="logo-overlay"><img src={logo} alt="Logo UTN" className="logo-utn" /></div>
                 </div>
                 <div className="card-body text-center">
                   <h5 className="card-title vehicle-title">{vehicle.model}</h5>
-                  <div className="vehicle-info">
-                    <span>{vehicle.plate}</span>
-                    <span>{vehicle.mode}</span>
-                  </div>
-                  <button
-                    className="btn btn-primary reservation-button"
-                    onClick={() => onReservarClick(vehicle.id)}
-                  >
-                    Reservación
-                  </button>
+                  <div className="vehicle-info"><span>{vehicle.plate}</span><span>{vehicle.type}</span></div>
+                  <button className="btn btn-primary reservation-button" onClick={() => handleReservarClick(vehicle)}>Reservación</button>
                 </div>
               </div>
             );
           })}
         </div>
-
-        <button
-          className="nav-arrow right"
-          onClick={handleNext}
-          disabled={currentIndex >= filteredVehicles.length - 3}
-        >
-          &gt;
-        </button>
+        <button className="nav-arrow right" onClick={handleNext} disabled={currentIndex >= filteredVehicles.length - 3}>&gt;</button>
       </div>
     </div>
   );

@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './muestrareservaciones.css';
 import ConfirmarFormulario from './confirmarformulario'; 
 
 const ReservationTicket = ({ onExit, boleta }) => {
-  // Mostrar el pop-up de confirmación SOLO si no viene una boleta (flujo "Send")
   const [showConfirm, setShowConfirm] = useState(!boleta);
+  const [showReason, setShowReason] = useState(false);
 
-  // Mapear el estado entrante a la etiqueta/clase visual
+  const [data, setData] = useState(null);
+  const [vehicleData, setVehicleData] = useState(null);
+
+  useEffect(() => {
+    if (!boleta) {
+      const savedData = localStorage.getItem("reservationData");
+      const savedVehicleData = localStorage.getItem("selectedVehicle");
+      const loggedUserName = localStorage.getItem("loggedUserName");
+
+      if (savedData) setData(JSON.parse(savedData));
+      if (savedVehicleData) {
+        const vehicle = JSON.parse(savedVehicleData);
+        if (loggedUserName) vehicle.applicant = loggedUserName;
+        setVehicleData(vehicle);
+      }
+    }
+  }, [boleta]);
+
   const getStatusKey = () => {
     if (!boleta) return "pending";
     if (boleta.estado === "pendientes") return "pending";
@@ -16,23 +33,27 @@ const ReservationTicket = ({ onExit, boleta }) => {
     }
     return "pending";
   };
-
   const statusKey = getStatusKey();
   const statusLabel =
     statusKey === "pending"  ? "Pending"  :
     statusKey === "accepted" ? "Accepted" :
     "Rejected";
 
-  const [showReason, setShowReason] = useState(false);
-
-  const handleExit = () => {
-    if (onExit) onExit();
-  };
+  const handleExit = () => { if (onExit) onExit(); };
 
   return (
     <div className="ticket-container">
-      {showConfirm && (
-        <ConfirmarFormulario onClose={() => setShowConfirm(false)} />
+      {showConfirm && <ConfirmarFormulario onClose={() => setShowConfirm(false)} />}
+      {showReason && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Rejection Reason</h3>
+            <p>{boleta?.motivo || "Reason not specified."}</p>
+            <div className="modal-buttons">
+              <button onClick={() => setShowReason(false)}>Close</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Modal para ver la razón del Rechazo */}
@@ -50,55 +71,56 @@ const ReservationTicket = ({ onExit, boleta }) => {
 
       <main className="ticket-content">
         <h2>Reservation ticket information</h2>
-        <p className="date">Reservation date: {boleta?.fecha || "2025-08-17"}</p>
+        <p className="date">Reservation date: {boleta?.fecha || data?.fecha || "2025-08-17"}</p>
 
         <div className="ticket-card">
           <div className="ticket-row">
             <div className="ticket-field">
               <label>Applicant</label>
-              <div className="value">Mario Araya</div>
+              <div className="value">{boleta?.applicant || vehicleData?.applicant || "Mario Araya"}</div>
             </div>
             <div className="ticket-field">
               <label>Vehicle plate</label>
-              <div className="value">{boleta?.codigo || "ABC34"}</div>
+              <div className="value">{boleta?.plate || vehicleData?.plate || "ABC34"}</div>
             </div>
             <div className="ticket-field">
               <label>Vehicle Brand</label>
-              <div className="value">{boleta?.marca || "Toyota"}</div>
+              <div className="value">{boleta?.model || vehicleData?.model || "Toyota"}</div>
             </div>
           </div>
+
 
           <div className="ticket-row">
             <div className="ticket-field">
               <label>Vehicle address</label>
-              <div className="value">10th Street, Central Avenue</div>
+              <div className="value">{boleta?.direccion || data?.direccion || "10th Street, Central Avenue"}</div>
             </div>
             <div className="ticket-field">
               <label>Trip estimate</label>
-              <div className="value">2 hrs with 30 minutes</div>
+              <div className="value">{boleta?.estimate || data?.estimate || "2 hrs with 30 minutes"}</div>
             </div>
             <div className="ticket-field">
               <label>Need for service</label>
-              <div className="value">Transfer to meeting</div>
+              <div className="value">{boleta?.necesidad || data?.necesidad || "Transfer to meeting"}</div>
             </div>
           </div>
+
 
           <div className="ticket-row">
             <div className="ticket-field">
               <label>Date of service</label>
-              <div className="value">{boleta?.fecha || "2025-08-17"}</div>
+              <div className="value">{boleta?.fecha || data?.fecha || "2025-08-17"}</div>
             </div>
             <div className="ticket-field">
               <label>Vehicle departure time</label>
-              <div className="value">16:00 🕓</div>
+              <div className="value">{boleta?.departureTime || data?.departureTime || "02:00 PM"}</div>
             </div>
             <div className="ticket-field">
               <label>Vehicle delivery time</label>
-              <div className="value">18:30 🕡</div>
+              <div className="value">{boleta?.deliveryTime || data?.deliveryTime || "04:30 PM"}</div>
             </div>
           </div>
 
-          {/* Status con colores y acción en Rejected */}
           <div className="ticket-row">
             <div className="ticket-field" style={{ width: '100%' }}>
               <label>Status</label>
@@ -109,24 +131,31 @@ const ReservationTicket = ({ onExit, boleta }) => {
               >
                 {statusLabel}
               </div>
+              <div
+                className={`status ${statusKey}`}
+                onClick={() => { if (statusKey === "rejected") setShowReason(true); }}
+                style={{ cursor: statusKey === "rejected" ? "pointer" : "default" }}
+              >
+                {statusLabel}
+              </div>
             </div>
           </div>
+
 
           <div className="ticket-row companions">
-            <div className="ticket-field">
-              <label>Companions</label>
-              <ul className="companion-list">
-                <li>Mauro López</li>
-                <li>Angie Vasquéz</li>
-              </ul>
-            </div>
-          </div>
+  <div className="ticket-field">
+    <label>Companions</label>
+    <ul className="companion-list">
+      {(boleta?.companions || data?.companions || []).map((c, i) => (
+        <li key={i}>{c}</li>
+      ))}
+    </ul>
+  </div>
+</div>
+
 
           <div className="ticket-buttons">
-            {/* (Quitado) <button className="btn-view">View pdf</button> */}
-            <button className="btn-exit" onClick={handleExit}>
-              Exit
-            </button>
+            <button className="btn-exit" onClick={handleExit}>Exit</button>
           </div>
         </div>
       </main>
@@ -135,4 +164,3 @@ const ReservationTicket = ({ onExit, boleta }) => {
 };
 
 export default ReservationTicket;
-
