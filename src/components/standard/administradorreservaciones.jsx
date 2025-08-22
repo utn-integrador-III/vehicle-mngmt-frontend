@@ -13,7 +13,6 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
   const [showTicket, setShowTicket] = useState(false);
   const [selectedBoleta, setSelectedBoleta] = useState(null);
 
-
   const [boletas, setBoletas] = useState(propBoletas || []);
   const loggedUserId = localStorage.getItem("loggedUserId");
 
