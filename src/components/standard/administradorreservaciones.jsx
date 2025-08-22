@@ -13,15 +13,18 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
   const [showTicket, setShowTicket] = useState(false);
   const [selectedBoleta, setSelectedBoleta] = useState(null);
 
-
   const [boletas, setBoletas] = useState(propBoletas || []);
-  const loggedUserId = localStorage.getItem("loggedUserId");
+
+  // Usar el nombre del usuario para buscar boletas
+  const loggedUserName = localStorage.getItem("loggedUserName");
 
   // Cargar boletas desde API
   useEffect(() => {
     const fetchBoletas = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/rental_requestId/${loggedUserId}`);
+        if (!loggedUserName) return;
+
+        const response = await axios.get(`http://127.0.0.1:8000/rental_requestId/${encodeURIComponent(loggedUserName)}`);
         if (response.data?.data) {
           const fetchedBoletas = response.data.data.map(b => ({
             id: b._id, // React key
@@ -37,7 +40,7 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
             fecha: b.date ? `${b.date.year}-${String(b.date.month).padStart(2,"0")}-${String(b.date.day).padStart(2,"0")}` : "",
             plate: b.plate,
             marca: b.model,
-            model: b.model,
+            model: b.model,  // <-- se asegura de mostrar el model
             status: b.status,
             estado: b.status === "approval" ? "completadas" : "pendientes",
             resultado: b.status === "approval" ? "aceptada" : b.status === "rejected" ? "rechazada" : ""
@@ -49,8 +52,8 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
         console.error("Error fetching boletas:", error);
       }
     };
-    if (loggedUserId) fetchBoletas();
-  }, [loggedUserId, propSetBoletas]);
+    fetchBoletas();
+  }, [loggedUserName, propSetBoletas]);
 
   const setBoletasProp = propSetBoletas || (() => {});
 
@@ -107,7 +110,7 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
               <div className="boleta-info">
                 <p>Boleta {b.codigo}</p>
                 <p>{b.fecha}</p>
-                <p>{b.vehiculo || b.marca}</p>
+                <p>{b.vehiculo || b.model}</p> {/* <-- mostrar model */}
               </div>
               <div className="boleta-actions">
                 {tab === "pendientes" ? (
