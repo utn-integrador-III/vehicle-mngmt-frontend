@@ -131,13 +131,6 @@ const ReservationTicket = ({ onExit, boleta }) => {
               >
                 {statusLabel}
               </div>
-              <div
-                className={`status ${statusKey}`}
-                onClick={() => { if (statusKey === "rejected") setShowReason(true); }}
-                style={{ cursor: statusKey === "rejected" ? "pointer" : "default" }}
-              >
-                {statusLabel}
-              </div>
             </div>
           </div>
 
@@ -146,12 +139,20 @@ const ReservationTicket = ({ onExit, boleta }) => {
   <div className="ticket-field">
     <label>Companions</label>
     <ul className="companion-list">
-      {(boleta?.companions || data?.companions || []).map((c, i) => (
+      {(
+        // Si existe boleta, construimos el array de companions
+        boleta 
+          ? [boleta.comp1, boleta.comp2, boleta.comp3, boleta.comp4].filter(Boolean)
+          : data
+            ? [data.comp1, data.comp2, data.comp3, data.comp4].filter(Boolean)
+            : []
+      ).map((c, i) => (
         <li key={i}>{c}</li>
       ))}
     </ul>
   </div>
 </div>
+
 
 
           <div className="ticket-buttons">
