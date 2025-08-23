@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import calendar from "../../images/calendarioicono.png";
 import './administradorboletas.css';
 
@@ -8,13 +9,65 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailToShow, setEmailToShow] = useState("");
 
+  const loggedUserName = localStorage.getItem("loggedUserName");
+
+  // Mapear status API a estado de pestañas
+  const mapStatus = (status) => {
+    switch (status) {
+      case "pending": return "pendientes";
+      case "in-progress": return "en-progreso";
+      case "cancelled": return "canceladas";
+      default: return "pendientes";
+    }
+  };
+
+  // Cargar boletas desde la API
+  useEffect(() => {
+    const fetchBoletas = async () => {
+      try {
+        if (!loggedUserName) return;
+
+        const response = await axios.get(`http://127.0.0.1:8000/rental_request/`);
+        if (response.data?.data) {
+          const fetchedBoletas = response.data.data.map((b) => ({
+            _id: b._id, // Usamos _id original para update
+            id: b._id,  // Para key de React
+            codigo: b.plate || "N/A",
+            nombre: b.applicant || "Desconocido",
+            marca: b.model || "Sin modelo",
+            fecha: b.date ? `${b.date.day}/${b.date.month}/${b.date.year}` : "",
+            email: b.email || "",
+            estado: mapStatus(b.status),
+            estadoDetalle: b.status === "in-progress" ? "Aceptada" : (b.status === "cancelled" ? "Cancelada" : "Pendiente"),
+
+            // Datos extra para enviar a EstadoBoleta
+            direccion: b.direccion || "",
+            necesidad: b.necesidad || "",
+            departureTime: b.start_date || "",
+            estimate: b.estimate || "",
+            companions: b.companions || [],
+            endTime: b.end_date || "",
+            status: b.status,
+            motivo: b.motivo || ""
+          }));
+          setBoletas(fetchedBoletas);
+        }
+      } catch (error) {
+        console.error("Error al obtener boletas:", error);
+      }
+    };
+
+    fetchBoletas();
+  }, [loggedUserName, setBoletas]);
+
   const getEstadoTexto = (b) => {
-    if (b.estadoDetalle) return b.estadoDetalle; // "Aceptada" o "Rechazada" o "Cancelada"
+    if (b.estadoDetalle) return b.estadoDetalle;
     if (tab === "pendientes") return "Pendiente";
     if (tab === "en-progreso") return "En progreso";
     if (tab === "canceladas") return "Cancelada";
   };
 
+  // Filtrar boletas según la pestaña y búsqueda
   const boletasFiltradas = boletas.filter(
     (b) =>
       b.estado === tab &&
@@ -94,28 +147,18 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
               <div className="boleta-actions">
                 <strong>{getEstadoTexto(b)}</strong>
 
-                {tab === "pendientes" ? (
-                  <button
-                    className="btn-primary"
-                    onClick={() => {
-                      setSelectedBoleta(b);
-                      setActiveTab("estadoboleta");
-                    }}
-                  >
-                    Pendiente
-                  </button>
-                ) : (
-                  <button
-                    className="btn-primary"
-                    onClick={() => {
-                      setSelectedBoleta(b);
-                      setActiveTab("estadoboleta");
-                    }}
-                  >
-                    Visualizar
-                  </button>
-                )}
+                {/* Botón principal */}
+                <button
+                  className="btn-primary"
+                  onClick={() => {
+                    setSelectedBoleta(b); // enviamos objeto completo
+                    setActiveTab("estadoboleta");
+                  }}
+                >
+                  {tab === "pendientes" ? "Pendiente" : "Visualizar"}
+                </button>
 
+                {/* Botón secundario */}
                 {tab === "canceladas" ? (
                   <button className="btn-secondary" onClick={() => handleDelete(b)}>
                     Borrar

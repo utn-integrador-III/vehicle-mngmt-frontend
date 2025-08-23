@@ -42,8 +42,8 @@ export default function AdministradorReservaciones({ boletas: propBoletas, setBo
             marca: b.model,
             model: b.model,  // <-- se asegura de mostrar el model
             status: b.status,
-            estado: b.status === "approval" ? "completadas" : "pendientes",
-            resultado: b.status === "approval" ? "aceptada" : b.status === "rejected" ? "rechazada" : ""
+            estado: b.status === "cancelled" ? "completadas" : "pendientes",
+            resultado: b.status === "cancelled" ? "aceptada" : b.status === "rejected" ? "rechazada" : ""
           }));
           setBoletas(fetchedBoletas);
           if (propSetBoletas) propSetBoletas(fetchedBoletas);

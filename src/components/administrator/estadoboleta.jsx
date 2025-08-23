@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './estadoboleta.css';
 
 const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
-  // Mapear estado inicial al status visual
+  // Mapear estado del backend al status visual local
   const mapToLocalStatus = (b) => {
     if (!b) return 'pending';
-    if (b.estado === 'pendientes') return 'pending';
-    if (b.estado === 'en-progreso') return 'accepted';
-    if (b.estado === 'canceladas' && b.estadoDetalle === 'Rechazada') return 'rejected';
-    if (b.estado === 'canceladas') return 'cancelled';
-    return 'pending';
+    switch (b.status) {
+      case 'pending':
+        return 'pending';
+      case 'in-progress':
+        return 'accepted';
+      case 'cancelled':
+        return 'cancelled';
+      default:
+        return 'pending';
+    }
   };
 
   const [status, setStatus] = useState(mapToLocalStatus(boleta));
@@ -19,56 +25,67 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
 
   const getStatusInfo = () => {
     switch (status) {
-      case 'accepted':  return { text: 'Aceptada',  className: 'accepted' };
-      case 'rejected':  return { text: 'Rechazada', className: 'rejected' };
-      case 'cancelled': return { text: 'Cancelada', className: 'rejected' }; // usa estilo rojo existente
-      default:          return { text: 'Pendiente', className: 'pending' };
+      case 'accepted': return { text: 'Aceptada', className: 'accepted' };
+      case 'rejected': return { text: 'Rechazada', className: 'rejected' };
+      case 'cancelled': return { text: 'Cancelada', className: 'rejected' };
+      default: return { text: 'Pendiente', className: 'pending' };
     }
   };
 
   const { text: statusText, className: statusClass } = getStatusInfo();
 
+  // Función para actualizar el status en la API
+  const updateStatusAPI = async (newStatus, extraData = {}) => {
+    try {
+      const payload = { status: newStatus, ...extraData };
+      const response = await axios.put(
+        `http://127.0.0.1:8000/rental_requestId/${boleta._id}`,
+        payload
+      );
+
+      if (response.data) {
+        setStatus(newStatus);
+        setBoletas(prev =>
+          prev.map(b =>
+            b._id === boleta._id
+              ? {
+                  ...b,
+                  status: newStatus,
+                  estado: newStatus === 'in-progress' ? 'en-progreso' : 'canceladas',
+                  estadoDetalle: newStatus === 'in-progress' ? 'Aceptada' : 'Cancelada',
+                  motivo: extraData.motivo || ''
+                }
+              : b
+          )
+        );
+
+        if (newStatus === 'in-progress' || newStatus === 'cancelled') {
+          setActiveTab('boletas');
+        }
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Ocurrió un error al actualizar la boleta.');
+    }
+  };
+
+  // Aprobar boleta
+  const handleAccept = () => {
+    updateStatusAPI('in-progress');
+  };
+
+  // Rechazar boleta con motivo
   const handleConfirmReject = () => {
     if (reason.trim() === '') {
       alert('Debe ingresar una razón de rechazo.');
       return;
     }
-    setStatus('rejected');
-    setBoletas(prev =>
-      prev.map(b =>
-        b.id === boleta.id
-          ? { ...b, estado: 'canceladas', estadoDetalle: 'Rechazada', motivo: reason }
-          : b
-      )
-    );
     setShowRejectModal(false);
-    // En rechazadas NO mostramos botones (se queda en la vista o puede navegar con el menú)
-  };
-
-  const handleAccept = () => {
-    setStatus('accepted');
-    setBoletas(prev =>
-      prev.map(b =>
-        b.id === boleta.id
-          ? { ...b, estado: 'en-progreso', estadoDetalle: 'Aceptada', motivo: '' }
-          : b
-      )
-    );
-    // Al aceptar, regresar a listado de boletas
-    setActiveTab('boletas');
+    updateStatusAPI('cancelled', { motivo: reason });
   };
 
   const handleCancelAccepted = () => {
-    setStatus('cancelled');
-    setBoletas(prev =>
-      prev.map(b =>
-        b.id === boleta.id
-          ? { ...b, estado: 'canceladas', estadoDetalle: 'Cancelada' }
-          : b
-      )
-    );
-    // Al cancelar, regresar a listado de boletas
-    setActiveTab('boletas');
+    updateStatusAPI('cancelled');
   };
 
   return (
@@ -98,15 +115,15 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
             <div className="ticket-row">
               <div className="ticket-field">
                 <label>Vehicle address</label>
-                <div className="value">10th Street, Central Avenue</div>
+                <div className="value">{boleta?.direccion}</div>
               </div>
               <div className="ticket-field">
                 <label>Trip estimate</label>
-                <div className="value">2 hrs with 30 minutes</div>
+                <div className="value">{boleta?.estimate}</div>
               </div>
               <div className="ticket-field">
                 <label>Need for service</label>
-                <div className="value">Transfer to meeting</div>
+                <div className="value">{boleta?.necesidad}</div>
               </div>
               <div className="ticket-field">
                 <label>Date of service</label>
@@ -114,11 +131,11 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
               </div>
               <div className="ticket-field">
                 <label>Vehicle departure time</label>
-                <div className="value">16:00 🕓</div>
+                <div className="value">{boleta?.departureTime}</div>
               </div>
               <div className="ticket-field">
                 <label>Vehicle delivery time</label>
-                <div className="value">18:30 🕡</div>
+                <div className="value">{boleta?.endTime || 'Pendiente'}</div>
               </div>
             </div>
 
@@ -149,8 +166,7 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
                 <label>Companions</label>
                 <div className="companions-full">
                   <ul>
-                    <li>Mauro López</li>
-                    <li>Angie Vasquéz</li>
+                    {boleta?.companions?.map((c, i) => <li key={i}>{c}</li>)}
                   </ul>
                 </div>
               </div>
@@ -160,18 +176,8 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
             <div className="ticket-buttons" style={{ justifyContent: 'center', gap: '10px' }}>
               {status === 'pending' && (
                 <>
-                  <button
-                    className="btn-approve"
-                    onClick={handleAccept}
-                  >
-                    Aprobar
-                  </button>
-                  <button
-                    className="btn-reject"
-                    onClick={() => setShowRejectModal(true)}
-                  >
-                    Rechazar
-                  </button>
+                  <button className="btn-approve" onClick={handleAccept}>Aprobar</button>
+                  <button className="btn-reject" onClick={() => setShowRejectModal(true)}>Rechazar</button>
                 </>
               )}
 
@@ -209,24 +215,21 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
               )}
 
               {status === 'cancelled' && (
-                <>
-                  <button
-                    onClick={() => setActiveTab('boletas')}
-                    style={{
-                      backgroundColor: '#d9d9d9',
-                      color: '#002B6E',
-                      padding: '10px 20px',
-                      borderRadius: '10px',
-                      border: 'none',
-                      fontWeight: 'bold',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Regresar
-                  </button>
-                </>
+                <button
+                  onClick={() => setActiveTab('boletas')}
+                  style={{
+                    backgroundColor: '#d9d9d9',
+                    color: '#002B6E',
+                    padding: '10px 20px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Regresar
+                </button>
               )}
-              {/* En rechazadas no mostramos botones */}
             </div>
           </div>
         </main>
