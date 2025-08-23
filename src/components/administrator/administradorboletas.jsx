@@ -27,7 +27,7 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
       try {
         if (!loggedUserName) return;
 
-        const response = await axios.get(`http://127.0.0.1:8000/rental_requestId/${encodeURIComponent(loggedUserName)}`);
+        const response = await axios.get(`http://127.0.0.1:8000/rental_request/`);
         if (response.data?.data) {
           const fetchedBoletas = response.data.data.map((b) => ({
             _id: b._id, // Usamos _id original para update
