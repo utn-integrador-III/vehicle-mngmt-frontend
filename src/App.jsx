@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 import AdministradorVehiculos from "./components/administrator/administradorvehiculos";
@@ -13,15 +13,32 @@ import logoUTN from "./images/logoutn.png";
 import perfilImg from "./images/logoperfil.png";
 
 function App() {
-  const [activeTab, setActiveTab] = useState("vehiculos");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState(null);
-  const [userName, setUserName] = useState(""); 
+  // Leer valores de localStorage al iniciar
+  const getInitial = (key, fallback) => {
+    const value = localStorage.getItem(key);
+    if (value === null) return fallback;
+    if (key === "isLoggedIn") return value === "true";
+    return value;
+  };
+
+  const [activeTab, setActiveTab] = useState(() => getInitial("activeTab", "vehiculos"));
+  const [isLoggedIn, setIsLoggedIn] = useState(() => getInitial("isLoggedIn", false));
+  const [userType, setUserType] = useState(() => getInitial("userType", null));
+  const [userName, setUserName] = useState(() => getInitial("userName", "")); 
 
   // Estado global de boletas
   const [boletas, setBoletas] = useState([]);
 
   const [selectedBoleta, setSelectedBoleta] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  // Sincronizar cambios de sesión y pestaña con localStorage
+  useEffect(() => {
+    localStorage.setItem("isLoggedIn", isLoggedIn);
+    localStorage.setItem("userType", userType ?? "");
+    localStorage.setItem("userName", userName ?? "");
+    localStorage.setItem("activeTab", activeTab ?? "");
+  }, [isLoggedIn, userType, userName, activeTab]);
 
   let Content;
   switch (activeTab) {
@@ -61,6 +78,7 @@ function App() {
         setIsLoggedIn(true);
         setUserType(role);
         setUserName(nombreCompleto);
+        setShowProfileMenu(false); // <-- Cierra el menú al hacer login
         if (role === "admin") setActiveTab("vehiculos");
         if (role === "usuario") setActiveTab("listado");
       }} />;
@@ -69,6 +87,20 @@ function App() {
       Content = <AdministradorVehiculos />;
   }
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserType(null);
+    setUserName("");
+    setActiveTab("login");
+    setShowProfileMenu(false);
+    // Limpia localStorage para sesión
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("activeTab");
+  };
+
+  // Mostrar solo Login si no está autenticado
   if (!isLoggedIn) {
     return (
       <Login
@@ -76,6 +108,7 @@ function App() {
           setIsLoggedIn(true);
           setUserType(role);
           setUserName(nombreCompleto);
+          setShowProfileMenu(false); 
           if (role === "admin") setActiveTab("vehiculos");
           if (role === "usuario") setActiveTab("listado");
         }}
@@ -102,9 +135,23 @@ function App() {
             </>
           )}
         </div>
-        <div className="navbar-profile">
+        <div
+          className="navbar-profile"
+          style={{ position: "relative", cursor: "pointer" }}
+          onClick={() => setShowProfileMenu((v) => !v)}
+        >
           <img src={perfilImg} alt="Perfil" className="profile-pic" />
-          <span className="profile-name">{userName}</span>
+          <span className="profile-name">
+            {userName}
+            <span style={{ marginLeft: 6, fontSize: 16, verticalAlign: "middle" }}>▼</span>
+          </span>
+          {showProfileMenu && (
+            <div className="profile-menu">
+              <button className="logout-btn" onClick={handleLogout}>
+                Cerrar sesión
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
