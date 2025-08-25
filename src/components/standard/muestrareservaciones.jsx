@@ -24,6 +24,7 @@ const ReservationTicket = ({ onExit, boleta }) => {
     }
   }, [boleta]);
 
+  // Mapea el estado a la clave visual
   const getStatusKey = () => {
     if (!boleta) return "pending";
     if (boleta.estado === "pendientes") return "pending";
@@ -34,96 +35,85 @@ const ReservationTicket = ({ onExit, boleta }) => {
     return "pending";
   };
   const statusKey = getStatusKey();
+
+  // Texto del estado en español
   const statusLabel =
-    statusKey === "pending"  ? "Pending"  :
-    statusKey === "accepted" ? "Accepted" :
-    "Rejected";
+    statusKey === "pending"  ? "Pendiente"  :
+    statusKey === "accepted" ? "Aceptada"   :
+    "Rechazada";
 
   const handleExit = () => { if (onExit) onExit(); };
 
   return (
     <div className="ticket-container">
       {showConfirm && <ConfirmarFormulario onClose={() => setShowConfirm(false)} />}
-      {showReason && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Rejection Reason</h3>
-            <p>{boleta?.motivo || "Reason not specified."}</p>
-            <div className="modal-buttons">
-              <button onClick={() => setShowReason(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Modal para ver la razón del Rechazo */}
+      {/* Modal para ver la razón del rechazo */}
       {showReason && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Rejection Reason</h3>
-            <p>{boleta?.motivo || "Reason not specified."}</p>
+            <h3>Motivo del rechazo</h3>
+            <p>{boleta?.motivo || "Motivo no especificado."}</p>
             <div className="modal-buttons">
-              <button onClick={() => setShowReason(false)}>Close</button>
+              <button onClick={() => setShowReason(false)}>Cerrar</button>
             </div>
           </div>
         </div>
       )}
 
       <main className="ticket-content">
-        <h2>Reservation ticket information</h2>
-        <p className="date">Reservation date: {boleta?.fecha || data?.fecha || "2025-08-17"}</p>
+        <h2>Información de la boleta de reservación</h2>
+        <br></br>
 
         <div className="ticket-card">
           <div className="ticket-row">
             <div className="ticket-field">
-              <label>Applicant</label>
+              <label>Solicitante</label>
               <div className="value">{boleta?.applicant || vehicleData?.applicant || "Mario Araya"}</div>
             </div>
             <div className="ticket-field">
-              <label>Vehicle plate</label>
+              <label>Placa del vehículo</label>
               <div className="value">{boleta?.plate || vehicleData?.plate || "ABC34"}</div>
             </div>
             <div className="ticket-field">
-              <label>Vehicle Brand</label>
+              <label>Marca del vehículo</label>
               <div className="value">{boleta?.model || vehicleData?.model || "Toyota"}</div>
             </div>
           </div>
 
-
           <div className="ticket-row">
             <div className="ticket-field">
-              <label>Vehicle address</label>
+              <label>Dirección del vehículo</label>
               <div className="value">{boleta?.direccion || data?.direccion || "10th Street, Central Avenue"}</div>
             </div>
             <div className="ticket-field">
-              <label>Trip estimate</label>
-              <div className="value">{boleta?.estimate || data?.estimate || "2 hrs with 30 minutes"}</div>
+              <label>Estimación del viaje</label>
+              <div className="value">{boleta?.estimate || data?.estimate || "2 hrs con 30 minutos"}</div>
             </div>
             <div className="ticket-field">
-              <label>Need for service</label>
-              <div className="value">{boleta?.necesidad || data?.necesidad || "Transfer to meeting"}</div>
+              <label>Necesidad del servicio</label>
+              <div className="value">{boleta?.necesidad || data?.necesidad || "Traslado a reunión"}</div>
             </div>
           </div>
 
-
           <div className="ticket-row">
             <div className="ticket-field">
-              <label>Date of service</label>
+              <label>Fecha del servicio</label>
               <div className="value">{boleta?.fecha || data?.fecha || "2025-08-17"}</div>
             </div>
             <div className="ticket-field">
-              <label>Vehicle departure time</label>
+              <label>Hora de salida del vehículo</label>
               <div className="value">{boleta?.departureTime || data?.departureTime || "02:00 PM"}</div>
             </div>
             <div className="ticket-field">
-              <label>Vehicle delivery time</label>
+              <label>Hora de entrega del vehículo</label>
               <div className="value">{boleta?.deliveryTime || data?.deliveryTime || "04:30 PM"}</div>
             </div>
           </div>
 
           <div className="ticket-row">
             <div className="ticket-field" style={{ width: '100%' }}>
-              <label>Status</label>
+              <label>Estado</label>
               <div
                 className={`status ${statusKey}`}
                 onClick={() => { if (statusKey === "rejected") setShowReason(true); }}
@@ -134,29 +124,25 @@ const ReservationTicket = ({ onExit, boleta }) => {
             </div>
           </div>
 
-
           <div className="ticket-row companions">
-  <div className="ticket-field">
-    <label>Companions</label>
-    <ul className="companion-list">
-      {(
-        // Si existe boleta, construimos el array de companions
-        boleta 
-          ? [boleta.comp1, boleta.comp2, boleta.comp3, boleta.comp4].filter(Boolean)
-          : data
-            ? [data.comp1, data.comp2, data.comp3, data.comp4].filter(Boolean)
-            : []
-      ).map((c, i) => (
-        <li key={i}>{c}</li>
-      ))}
-    </ul>
-  </div>
-</div>
-
-
+            <div className="ticket-field">
+              <label>Acompañantes</label>
+              <ul className="companion-list">
+                {(
+                  boleta
+                    ? [boleta.comp1, boleta.comp2, boleta.comp3, boleta.comp4].filter(Boolean)
+                    : data
+                      ? [data.comp1, data.comp2, data.comp3, data.comp4].filter(Boolean)
+                      : []
+                ).map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
           <div className="ticket-buttons">
-            <button className="btn-exit" onClick={handleExit}>Exit</button>
+            <button className="btn-exit" onClick={handleExit}>Salir</button>
           </div>
         </div>
       </main>
@@ -165,3 +151,4 @@ const ReservationTicket = ({ onExit, boleta }) => {
 };
 
 export default ReservationTicket;
+
