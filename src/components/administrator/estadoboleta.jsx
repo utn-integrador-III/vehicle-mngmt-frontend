@@ -92,49 +92,49 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
     <>
       <div className={`ticket-container ${showRejectModal ? 'blurred' : ''}`}>
         <main className="ticket-content">
-          <h2>Reservation ticket information</h2>
-          <p className="date">Reservation date: {boleta?.fecha}</p>
+          <h2>Información de la Boleta de Reserva</h2>
+          <p className="date">Fecha de la Reserva: {boleta?.fecha}</p>
 
           <div className="ticket-card">
             {/* Datos */}
             <div className="ticket-row">
               <div className="ticket-field">
-                <label>Applicant</label>
+                <label>Solicitante</label>
                 <div className="value">{boleta?.nombre}</div>
               </div>
               <div className="ticket-field">
-                <label>Vehicle plate</label>
+                <label>Placa del Vehículo</label>
                 <div className="value">{boleta?.codigo}</div>
               </div>
               <div className="ticket-field">
-                <label>Vehicle Brand</label>
+                <label>Marca del Vehículo</label>
                 <div className="value">{boleta?.marca}</div>
               </div>
             </div>
 
             <div className="ticket-row">
               <div className="ticket-field">
-                <label>Vehicle address</label>
+                <label>Dirección del Vehículo</label>
                 <div className="value">{boleta?.direccion}</div>
               </div>
               <div className="ticket-field">
-                <label>Trip estimate</label>
+                <label>Estimación del Viaje</label>
                 <div className="value">{boleta?.estimate}</div>
               </div>
               <div className="ticket-field">
-                <label>Need for service</label>
+                <label>Necesidad del Servicio</label>
                 <div className="value">{boleta?.necesidad}</div>
               </div>
               <div className="ticket-field">
-                <label>Date of service</label>
+                <label>Fecha del Servicio</label>
                 <div className="value">{boleta?.fecha}</div>
               </div>
               <div className="ticket-field">
-                <label>Vehicle departure time</label>
+                <label>Hora de Salida</label>
                 <div className="value">{boleta?.departureTime}</div>
               </div>
               <div className="ticket-field">
-                <label>Vehicle delivery time</label>
+                <label>Hora de Entrega</label>
                 <div className="value">{boleta?.endTime || 'Pendiente'}</div>
               </div>
             </div>
@@ -142,7 +142,7 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
             {/* Estado */}
             <div className="ticket-row">
               <div className="ticket-field" style={{ width: '100%' }}>
-                <label>Status</label>
+                <label>Estado</label>
                 <div className={`status ${statusClass}`}>
                   {statusText}
                   {status === 'rejected' && reason && (
@@ -163,7 +163,7 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
             {/* Compañeros */}
             <div className="ticket-row">
               <div className="ticket-field" style={{ width: '100%' }}>
-                <label>Companions</label>
+                <label>Compañeros</label>
                 <div className="companions-full">
                   <ul>
                     {boleta?.companions?.map((c, i) => <li key={i}>{c}</li>)}
@@ -195,7 +195,7 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
                       cursor: 'pointer'
                     }}
                   >
-                    Cancelada
+                    Cancelar
                   </button>
                   <button
                     onClick={() => setActiveTab('boletas')}
@@ -240,21 +240,21 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
         <div className="modal-overlay">
           <div className="modal">
             <h3 style={{ textAlign: 'center' }}>Rechazo ❌</h3>
-            <p><strong>Vehicle Plate:</strong> {boleta?.codigo}</p>
-            <p><strong>Applicant:</strong> {boleta?.nombre}</p>
-            <p><strong>Date of service:</strong> {boleta?.fecha}</p>
-            <p><strong>Vehicle Brand:</strong> {boleta?.marca}</p>
+            <p><strong>Placa del Vehículo:</strong> {boleta?.codigo}</p>
+            <p><strong>Solicitante:</strong> {boleta?.nombre}</p>
+            <p><strong>Fecha del Servicio:</strong> {boleta?.fecha}</p>
+            <p><strong>Marca del Vehículo:</strong> {boleta?.marca}</p>
 
-            <label>Reason for rejection:</label>
+            <label>Motivo del rechazo:</label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Enter reason..."
+              placeholder="Ingrese el motivo..."
             />
 
             <div className="modal-buttons">
-              <button onClick={() => setShowRejectModal(false)}>Back</button>
-              <button onClick={handleConfirmReject}>Done</button>
+              <button onClick={() => setShowRejectModal(false)}>Atrás</button>
+              <button onClick={handleConfirmReject}>Hecho</button>
             </div>
           </div>
         </div>
@@ -264,10 +264,10 @@ const EstadoBoleta = ({ boleta, setBoletas, setActiveTab }) => {
       {showReasonModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Rejection Reason</h3>
+            <h3>Motivo del Rechazo</h3>
             <p>{reason}</p>
             <div className="modal-buttons">
-              <button onClick={() => setShowReasonModal(false)}>Close</button>
+              <button onClick={() => setShowReasonModal(false)}>Cerrar</button>
             </div>
           </div>
         </div>
