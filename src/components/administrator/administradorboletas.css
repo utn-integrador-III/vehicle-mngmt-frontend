@@ -1,0 +1,164 @@
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin: 50px 0; 
+  border-radius: 20px;
+  box-shadow: none;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+
+.tab-btn {
+  padding: 10px 50px;
+  border: none;
+  background: #D9D9D9; 
+  font-size: 14px;
+  color: #133E87;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 20px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); 
+}
+
+.tab-btn.active {
+  background: #133E87;
+  color: white;
+  font-size: 16px;
+  transform: scale(1.2);
+}
+
+.tab-btn:not(:last-child) {
+  border-right: none;
+}
+
+.tab-btn {
+  outline: none;       
+}
+
+.tab-btn:focus {
+  outline: none;      
+}
+
+
+/* Buscador */
+.search-wrapper {
+  display: flex;
+  justify-content: center; 
+  gap: 8px; 
+  margin-bottom: 20px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #D9D9D9;
+  border-radius: 10px;
+  padding: 10px 10px;
+  width: 280px;
+}
+
+.search-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.search-container input {
+  border: none;
+  color: #000000;
+  background: transparent;
+  outline: none;
+  flex: 1;
+}
+
+.calendar-icon {
+  width: 30px;
+  height: 35px;
+  cursor: pointer;
+}
+
+
+
+/* Lista boletas */
+.boletas-list {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 15px;
+}
+
+.boleta-card {
+  display: flex;
+  background: white;
+  width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.boleta-color {
+  background: #143d85;
+  width: 50px;
+}
+
+.boleta-info {
+  flex: 1;
+  padding: 10px;
+  color: black;
+}
+
+.boleta-actions {
+  display: flex;
+  color: #000000;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+}
+
+.btn-primary {
+  background: #143d85;
+  outline: none; 
+  color: #FFFFFF;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 15px;
+}
+
+.btn-secondary {
+  background: #dcdcdc;
+  outline: none; 
+  color: #002B6E;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 15px;
+}
+
+.btn-primary:focus {
+  outline: none;      
+}
+
+.btn-secondary:focus {
+  outline: none;      
+}
+
+/* --- Modal simple para mostrar el correo --- */
+.ab-modal-overlay{
+  position: fixed; inset: 0; background: rgba(0,0,0,.3);
+  display:flex; align-items:center; justify-content:center; z-index:1000;
+}
+.ab-modal{
+  background:#fff; color:#000; padding:24px; border-radius:12px; width: 420px;
+  box-shadow:0 4px 10px rgba(0,0,0,.3);
+}
+.ab-modal-buttons{
+  display:flex; justify-content:flex-end; gap:10px; margin-top:16px;
+}
+.ab-modal-buttons button{
+  padding:8px 14px; border:none; border-radius:6px; cursor:pointer;
+}
+.ab-modal-buttons button:first-child{ background:#d9d9d9; color:#002B6E; }
+.ab-modal-buttons button:last-child{ background:#002B6E; color:#fff; }

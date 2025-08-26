@@ -1,0 +1,197 @@
+/* ==== CONTAINER ==== */
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
+  text-align: center;
+}
+
+/* ==== SEARCH INPUT ==== */
+.search-input-group {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 600px;
+  padding: 16px 24px;
+  border-radius: 30px;
+  background-color: #003366;
+  color: #ffffff;
+  border: 2px solid #ccc;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ==== CAROUSEL LAYOUT ==== */
+.carousel-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 10px;
+}
+
+.carousel {
+  display: flex;
+  gap: 15px; /* Separación entre cards */
+  overflow: hidden;
+  width: 100%;
+  max-width: 900px;
+  justify-content: center;
+}
+
+/* ==== CARD GENERAL ==== */
+.vehicle-card {
+  flex: 0 0 auto;
+  width: 250px;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.center-card {
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.side-card {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-5px);
+}
+
+/* ==== VEHICLE IMAGE ==== */
+.image-container {
+  position: relative;
+}
+
+.vehicle-photo {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  background-color: #f4f4f4;
+}
+
+/* ==== LOGO OVERLAY ==== */
+.logo-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.logo-utn {
+  width: 40px;
+  height: auto;
+}
+
+/* ==== CARD BODY ==== */
+.card-body {
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.vehicle-title {
+  color: #000;
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.vehicle-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* ==== BUTTON ==== */
+.reservation-button {
+  background-color: #003366;
+  border: none;
+  width: 80%;
+  border-radius: 30px;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.reservation-button:hover {
+  background-color: #0055a5;
+}
+
+/* ==== NAVIGATION ARROWS ==== */
+.nav-arrow {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: #ccc; /* gris claro por defecto */
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0 12px;
+}
+
+.nav-arrow:hover {
+  color: #000; /* negro al pasar el mouse */
+}
+
+.nav-arrow:disabled {
+  color: #eee; /* más claro si está deshabilitado */
+  cursor: not-allowed;
+}
+
+
+/* ==== RESPONSIVE COLUMNS (if needed) ==== */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+[class*="col-"] {
+  padding-right: 15px;
+  padding-left: 15px;
+  box-sizing: border-box;
+}
+
+.col-sm-12 {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .col-md-4 {
+    width: 33.3333%;
+  }
+}
+
+@media (min-width: 992px) {
+  .col-lg-3 {
+    width: 25%;
+  }
+}

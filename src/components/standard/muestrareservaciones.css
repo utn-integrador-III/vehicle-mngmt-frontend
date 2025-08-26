@@ -1,0 +1,129 @@
+.ticket-content {
+  padding: 40px;
+  text-align: center;
+  color: #090909;
+}
+
+.date {
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.ticket-card {
+  margin: 0 auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 900px;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.ticket-field {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+}
+
+.ticket-field label {
+  display: block;
+  color: #090909;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.value {
+  background-color: #e5e5e5;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.status {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+/* ✅ NUEVO: Pending en celeste atractivo */
+.status.pending {
+  background: linear-gradient(180deg, #eaf6ff 0%, #d7edff 100%);
+  color: #2c5a85;                 /* azul grisáceo legible */
+  border: 1px solid #b8dcff;
+  box-shadow: inset 0 1px 2px rgba(16,24,40,.06);
+}
+
+.status.accepted {
+  color: green;
+  background-color: #e6fbe9;
+  border: 1px solid #9be3a5;
+}
+
+/* ✅ CENTRAR el bloque de companions */
+.ticket-row.companions {
+  justify-content: center;        /* anula space-between del .ticket-row */
+  width: 100%;
+}
+
+.ticket-row.companions .ticket-field {
+  flex: 0 1 auto;                 /* evita que se estire a toda la fila */
+  display: flex;
+  flex-direction: column;
+  align-items: center;            /* centra título y caja */
+  text-align: center;
+  width: 100%;
+}
+
+/* Caja de lista centrada y con look de “texto” */
+.companions ul {
+  list-style: disc inside;
+  text-align: left;
+  margin-top: 10px;
+
+  /* caja visible y centrada */
+  background-color: #ffffff;
+  border: 1px solid #cfd8ff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  width: min(88%, 680px);         /* ancha pero sin exceder el card */
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 10px 24px rgba(36, 85, 150, 0.12);
+}
+
+.ticket-buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn-view,
+.btn-exit {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-view {
+  background-color: #0c44cc;
+  color: white;
+  border: none;
+}
+
+.btn-exit {
+  background-color: white;
+  color: #0c44cc;
+  border: 1px solid #999;
+}
+
+
+ 
