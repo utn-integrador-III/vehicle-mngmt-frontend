@@ -97,8 +97,8 @@ export default function Reservaciones({ onExit, boletas, setBoletas, vehiculo })
                         <input type="text" value={reservationHour} disabled />
                     </div>
                     <div className="res-group">
-                        <label>Adjuntar PDF</label>
-                        <button className="file-btn" onClick={() => document.getElementById("pdf-input").click()}>Select file</button>
+                        <label>Adjuntar PDF </label>
+                        <button className="file-btn" onClick={() => document.getElementById("pdf-input").click()}>Seleccionar archivo</button>
                         <input id="pdf-input" type="file" accept="application/pdf" onChange={handleFile} hidden />
                     </div>
                 </div>
@@ -131,8 +131,8 @@ export default function Reservaciones({ onExit, boletas, setBoletas, vehiculo })
                 </div>
             </div>
             <div className="res-footer">
-                <button className="send-btn" onClick={handleSend}>Send</button>
-                <button className="exit-btn" onClick={handleExit}>Exit</button>
+                <button className="send-btn" onClick={handleSend}>Enviar</button>
+                <button className="exit-btn" onClick={handleExit}>Salir</button>
             </div>
         </div>
     );
