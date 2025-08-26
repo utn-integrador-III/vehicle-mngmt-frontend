@@ -85,36 +85,36 @@ export default function Reservaciones({ onExit, boletas, setBoletas, vehiculo })
 
     return (
         <div className="res-container">
-            <h2 className="res-title">Vehicle reservation ticket</h2>
+            <h2 className="res-title">Boleta de reservación de vehículo</h2>
             <div className="res-card">
                 <div className="res-col">
                     <div className="res-group">
-                        <label>Direction of travel</label>
+                        <label>Dirección del viaje</label>
                         <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
                     </div>
                     <div className="res-group">
-                        <label>Departure time</label>
+                        <label>Hora de salida</label>
                         <input type="text" value={reservationHour} disabled />
                     </div>
                     <div className="res-group">
-                        <label>Attach PDF</label>
-                        <button className="file-btn" onClick={() => document.getElementById("pdf-input").click()}>Select file</button>
+                        <label>Adjuntar PDF </label>
+                        <button className="file-btn" onClick={() => document.getElementById("pdf-input").click()}>Seleccionar archivo</button>
                         <input id="pdf-input" type="file" accept="application/pdf" onChange={handleFile} hidden />
                     </div>
                 </div>
                 <div className="res-col">
                     <div className="res-group">
-                        <label>Need for service</label>
+                        <label>Necesidad del servicio</label>
                         <input type="text" value={necesidad} onChange={(e) => setNecesidad(e.target.value)} />
                     </div>
                     <div className="res-group">
-                        <label>Estimated travel time</label>
+                        <label>Tiempo estimado de viaje</label>
                         <input type="text" value={estimate} onChange={(e) => setEstimate(e.target.value)} />
                     </div>
                     <div className="companions">
                         {[1,2,3,4].map((i) => (
                             <div className="res-group" key={i}>
-                                <label>Companion {i}</label>
+                                <label>Acompañante{i}</label>
                                 <input
                                     type="text"
                                     value={{1: comp1, 2: comp2, 3: comp3, 4: comp4}[i]}
@@ -131,8 +131,8 @@ export default function Reservaciones({ onExit, boletas, setBoletas, vehiculo })
                 </div>
             </div>
             <div className="res-footer">
-                <button className="send-btn" onClick={handleSend}>Send</button>
-                <button className="exit-btn" onClick={handleExit}>Exit</button>
+                <button className="send-btn" onClick={handleSend}>Enviar</button>
+                <button className="exit-btn" onClick={handleExit}>Salir</button>
             </div>
         </div>
     );
