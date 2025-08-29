@@ -14,7 +14,7 @@ const ListadoVehiculos = ({ onReservarClick }) => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/car");
+        const response = await axios.get("http://146.190.156.26:8000/car");
         if (response.data && response.data.data) {
           const formattedVehicles = response.data.data.map((vehicle) => ({
             id: vehicle.id,
