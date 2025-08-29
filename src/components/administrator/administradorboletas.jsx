@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import calendar from "../../images/calendarioicono.png";
-import './administradorboletas.css';
+import "./administradorboletas.css";
 
-export default function Boletas({ boletas, setBoletas, setActiveTab, setSelectedBoleta }) {
+export default function Boletas({
+  boletas,
+  setBoletas,
+  setActiveTab,
+  setSelectedBoleta,
+}) {
   const [tab, setTab] = useState("en-progreso");
   const [search, setSearch] = useState("");
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -14,10 +19,14 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
   // Mapear status API a estado de pestañas
   const mapStatus = (status) => {
     switch (status) {
-      case "pending": return "pendientes";
-      case "in-progress": return "en-progreso";
-      case "cancelled": return "canceladas";
-      default: return "pendientes";
+      case "pending":
+        return "pendientes";
+      case "in-progress":
+        return "en-progreso";
+      case "cancelled":
+        return "canceladas";
+      default:
+        return "pendientes";
     }
   };
 
@@ -27,18 +36,25 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
       try {
         if (!loggedUserName) return;
 
-        const response = await axios.get(`http://127.0.0.1:8000/rental_request/`);
+        const response = await axios.get(
+          `http://146.190.156.26:8000/rental_request/`
+        );
         if (response.data?.data) {
           const fetchedBoletas = response.data.data.map((b) => ({
             _id: b._id, // Usamos _id original para update
-            id: b._id,  // Para key de React
+            id: b._id, // Para key de React
             codigo: b.plate || "N/A",
             nombre: b.applicant || "Desconocido",
             marca: b.model || "Sin modelo",
             fecha: b.date ? `${b.date.day}/${b.date.month}/${b.date.year}` : "",
             email: b.email || "",
             estado: mapStatus(b.status),
-            estadoDetalle: b.status === "in-progress" ? "Aceptada" : (b.status === "cancelled" ? "Cancelada" : "Pendiente"),
+            estadoDetalle:
+              b.status === "in-progress"
+                ? "Aceptada"
+                : b.status === "cancelled"
+                ? "Cancelada"
+                : "Pendiente",
 
             // Datos extra para enviar a EstadoBoleta
             direccion: b.direccion || "",
@@ -48,7 +64,7 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
             companions: b.companions || [],
             endTime: b.end_date || "",
             status: b.status,
-            motivo: b.motivo || ""
+            motivo: b.motivo || "",
           }));
           setBoletas(fetchedBoletas);
         }
@@ -71,11 +87,9 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
   const boletasFiltradas = boletas.filter(
     (b) =>
       b.estado === tab &&
-      (
-        b.codigo.toLowerCase().includes(search.toLowerCase()) ||
+      (b.codigo.toLowerCase().includes(search.toLowerCase()) ||
         b.nombre.toLowerCase().includes(search.toLowerCase()) ||
-        b.marca.toLowerCase().includes(search.toLowerCase())
-      )
+        b.marca.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleContact = (b) => {
@@ -85,7 +99,7 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
 
   const handleDelete = (b) => {
     if (window.confirm(`¿Borrar la boleta ${b.codigo}?`)) {
-      setBoletas(prev => prev.filter(x => x.id !== b.id));
+      setBoletas((prev) => prev.filter((x) => x.id !== b.id));
     }
   };
 
@@ -126,11 +140,7 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <img
-          src={calendar}
-          alt="calendario"
-          className="calendar-icon"
-        />
+        <img src={calendar} alt="calendario" className="calendar-icon" />
       </div>
 
       <div className="boletas-list">
@@ -160,11 +170,17 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
 
                 {/* Botón secundario */}
                 {tab === "canceladas" ? (
-                  <button className="btn-secondary" onClick={() => handleDelete(b)}>
+                  <button
+                    className="btn-secondary"
+                    onClick={() => handleDelete(b)}
+                  >
                     Borrar
                   </button>
                 ) : (
-                  <button className="btn-secondary" onClick={() => handleContact(b)}>
+                  <button
+                    className="btn-secondary"
+                    onClick={() => handleContact(b)}
+                  >
                     Contactar
                   </button>
                 )}
@@ -178,14 +194,21 @@ export default function Boletas({ boletas, setBoletas, setActiveTab, setSelected
 
       {/* Modal de correo */}
       {showEmailModal && (
-        <div className="ab-modal-overlay" onClick={() => setShowEmailModal(false)}>
+        <div
+          className="ab-modal-overlay"
+          onClick={() => setShowEmailModal(false)}
+        >
           <div className="ab-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Contacto</h3>
             <p>Correo del solicitante:</p>
-            <p><strong>{emailToShow}</strong></p>
+            <p>
+              <strong>{emailToShow}</strong>
+            </p>
             <div className="ab-modal-buttons">
               <button onClick={() => setShowEmailModal(false)}>Cerrar</button>
-              <a href={`mailto:${emailToShow}`}><button>Enviar correo</button></a>
+              <a href={`mailto:${emailToShow}`}>
+                <button>Enviar correo</button>
+              </a>
             </div>
           </div>
         </div>
