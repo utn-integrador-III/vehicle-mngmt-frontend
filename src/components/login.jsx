@@ -14,17 +14,20 @@ const Login = ({ onLoginSuccess }) => {
     setError("");
     setLoading(true);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/auth/login", {
-        cedula: username,
-        contraseña: password,
-      });
+      const response = await axios.post(
+        "http://146.190.156.26:8000/auth/login",
+        {
+          cedula: username,
+          contraseña: password,
+        }
+      );
 
       const data = response.data.data;
       if (data && data.rol) {
         const nombreCompleto = `${data.nombre} ${data.apellidos}`;
 
         // Guardar en localStorage
-        localStorage.setItem("loggedUserName", nombreCompleto); 
+        localStorage.setItem("loggedUserName", nombreCompleto);
         localStorage.setItem("loggedUserId", data.id); // 👈 Guardar ID del usuario
 
         if (onLoginSuccess) onLoginSuccess(data.rol, nombreCompleto);
@@ -69,7 +72,9 @@ const Login = ({ onLoginSuccess }) => {
               placeholder="***"
               required
             />
-            {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
+            {error && (
+              <div style={{ color: "red", marginTop: 10 }}>{error}</div>
+            )}
             <button type="submit" disabled={loading}>
               {loading ? "Ingresando..." : "Login"}
             </button>
